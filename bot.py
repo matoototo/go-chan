@@ -19,7 +19,7 @@ async def on_message(message):
     if ("hi bot-chan" in message.content.lower()):
         await client.send_message(message.channel, "hi!")
 
-    if (message.content.lower().split(" ")[0] in commands):
+    if (message.content.lower().split(" ")[0] in commands and not message.author.bot):
         command = message.content.lower().split(" ")[0]
         contents = message.content.lower().split(" ")[1:]
 
@@ -46,10 +46,10 @@ async def on_message(message):
                 contents[1] = contents[1].split("x")[0]
                 await client.send_message(message.channel, f"Oh no... you entered an invalid board size!")
             else:
-                challengeID = contents[1]+str(int(message.raw_mentions[0])+message.author.id)
+                challengeID = contents[1]+str(int(message.raw_mentions[0])+int(message.author.id))
                 if (challengeID not in challenges): 
                     challenges.append(challengeID)
-                    await client.send_message(message.channel, f"Challenge sent :)!")
+                    await client.send_message(message.channel, f"Challenge sent!")
                 else:
                     await client.send_message(message.channel, f"Challenge between those two players already exists!")
 
