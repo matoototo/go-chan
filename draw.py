@@ -9,7 +9,7 @@ BOARD_SETTINGS_13 = (12, False, 3)
 BOARD_SETTINGS_19 = (18, True, 3)
 
 class VisualBoard:
-	"""Contains data for the visual representation of a go board."""
+	"""Contains data for the visual representation of a Go board."""
 	
 	def __init__(self, width, height, borderSize, settings, boardTexture, stoneBlackTexture, stoneWhiteTexture):
 		"""Instantiates a new board from the given data.
@@ -47,8 +47,7 @@ class VisualBoard:
 				self.baseImage.paste(texture, (x, y))
 	
 	def __draw_board(self):
-		"""Draw goban lines, labels and star points on the internal image.
-		"""
+		"""Draw goban lines, labels and star points on the internal image."""
 		
 		COLOR = (0, 0, 0, 200)
 		STAR_POINT_SIZE = 2
