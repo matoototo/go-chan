@@ -57,7 +57,7 @@ def draw_board(image, boardSize, borderSize, drawExtraStarPoints = True):
 	
 	for i in range(0, boardSize + 1):
 		y = borderSize + stepY * i;
-		label = str(i);
+		label = str(boardSize - i);
 		labelWidth, labelHeight = draw.textsize(label)
 		
 		draw.line([(borderSize, y), (innerWidth + borderSize, y)], fill = COLOR)
