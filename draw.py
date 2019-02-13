@@ -41,12 +41,12 @@ def draw_board(image, boardSize):
 	for i in range(1, boardSize):
 		x = stepX * i;
 		
-		draw.line([(x, 0), (x, imageHeight)])
+		draw.line([(x, 0), (x, imageHeight)], fill = (0, 0, 0, 200))
 	
 	for i in range(1, boardSize):
 		y = stepY * i;
 		
-		draw.line([(0, y), (imageWidth, y)])
+		draw.line([(0, y), (imageWidth, y)], fill = (0, 0, 0, 200))
 	
 	return newImage
 
