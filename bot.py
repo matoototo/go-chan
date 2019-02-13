@@ -3,7 +3,7 @@
 #perm 523328
 
 import discord
-from game import Game
+from game import Game, Challenge
 
 client = discord.Client()
 commands = ["accept", "challenge", "decline", "move"]
@@ -39,15 +39,16 @@ async def on_message(message):
             else:
                 exists = False
                 for board in boardSizes:
-                    challengeID = board+str(int(message.raw_mentions[0])+int(message.author.id))
-                    if ([message.raw_mentions[0], challengeID] in challenges):
-                        exists = True
-                        challenges = [x for x in challenges if x != [message.raw_mentions[0], challengeID]] #remove challengeID from challenges
-                        if (command == commands[0]):
-                            make_game(challengeID)
-                            await client.send_message(message.channel, f"Challenge accepted!")
-                        else:
-                            await client.send_message(message.channel, f"Challenge declined!")
+                    challenge = Challenge(message.raw_mentions[0], message.author.id, board)
+                    for i in challenges:
+                        if (i.challenger == challenge.challenger and i.challenged == challenge.challenged):
+                            exists = True
+                            challenges = [x for x in challenges if x != i] #remove challenge from challenges
+                            if (command == commands[0]):
+                                make_game(challenge)
+                                await client.send_message(message.channel, f"Challenge accepted!")
+                            else:
+                                await client.send_message(message.channel, f"Challenge declined!")
                 if (not exists): await client.send_message(message.channel, f"No such challenge exists!")
 
         #challenge @user board
@@ -61,16 +62,23 @@ async def on_message(message):
                 contents[1] = contents[1].split("x")[0]
                 await client.send_message(message.channel, f"Oh no... you entered an invalid board size!")
             else:
-                challengeID = contents[1]+str(int(message.raw_mentions[0])+int(message.author.id))
-                if ([message.author.id, challengeID] not in challenges and [message.raw_mentions[0], challengeID] not in challenges): 
-                    challenges.append([message.author.id, challengeID])
-                    await client.send_message(message.channel, f"Challenge sent!")
-                else:
+                exists = False
+                challenge = Challenge(message.author.id, message.raw_mentions[0], contents[1])
+                challengeFlipped = Challenge(message.raw_mentions[0], message.author.id, contents[1])
+                for i in challenges:
+                    if (i.challenger == challenge.challenger and i.challenged == challenge.challenged):
+                        exists = True
+                    if (i.challenger == challengeFlipped.challenger and i.challenged == challengeFlipped.challenged):
+                        exists = True
+                if (exists):
                     await client.send_message(message.channel, f"Challenge between those two players already exists!")
-
+                else:
+                    challenges.append(challenge.__copy__())
+                    await client.send_message(message.channel, f"Challenge sent!")
+                
         if (command == commands[3]):
             pass
-def make_game(challengeID):
+def make_game(challenge):
     return 0
 
 client.run("NTQ1MzA2NDg3MTkxMjQwNzA0.D0Xv8w.e7L44QaHK6ndZigjkSTWGchrEZ8")
