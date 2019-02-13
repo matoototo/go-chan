@@ -39,7 +39,7 @@ def draw_board(image, boardSettings, borderSize):
 	
 	COLOR = (0, 0, 0, 200)
 	STAR_POINT_SIZE = 2
-	LABEL_BOARD_SPACING = 10;
+	LABEL_BOARD_SPACING = 10
 	
 	(boardSize, drawExtraStarPoints, starPointOffset) = boardSettings
 	newImage = image.copy()
@@ -52,8 +52,8 @@ def draw_board(image, boardSettings, borderSize):
 	
 	# Draw lines and labels
 	for i in range(0, boardSize + 1):
-		x = borderSize + stepX * i;
-		label = chr(ord('A') + i);
+		x = borderSize + stepX * i
+		label = chr(ord('A') + i)
 		labelWidth, labelHeight = draw.textsize(label)
 		
 		draw.line([(x, borderSize), (x, innerHeight + borderSize)], fill = COLOR)
@@ -92,6 +92,6 @@ def draw_board(image, boardSettings, borderSize):
 	
 	return newImage
 
-#board = draw_loop_image(500, 500, BOARD_TEXTURE);
+#board = draw_loop_image(500, 500, BOARD_TEXTURE)
 #board = draw_board(board, BOARD_SETTINGS_19, 50)
 #board.save("test.png")
