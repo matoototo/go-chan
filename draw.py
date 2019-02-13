@@ -1,8 +1,12 @@
 from PIL import Image, ImageDraw
 
-boardTexture = Image.open("assets/board.png");
-stoneBlack = Image.open("assets/stone_black.png");
-stoneWhite = Image.open("assets/stone_white.png");
+BOARD_TEXTURE = Image.open("assets/board.png")
+STONE_BLACK = Image.open("assets/stone_black.png")
+STONE_WHITE = Image.open("assets/stone_white.png")
+
+BOARD_SETTINGS_9 = (8, False, 2)
+BOARD_SETTINGS_13 = (12, False, 3)
+BOARD_SETTINGS_19 = (18, True, 3)
 
 def draw_loop_image(width, height, texture):
 	"""Create an image of given size using an arbitrary texture.
@@ -19,28 +23,29 @@ def draw_loop_image(width, height, texture):
 	
 	for x in range(0, width, textureWidth):
 		for y in range(0, height, textureHeight):
-			board.paste(boardTexture, (x, y))
+			board.paste(texture, (x, y))
 	
 	return board
 
-def draw_board(image, boardSize, borderSize, drawExtraStarPoints = True):
+def draw_board(image, boardSettings, borderSize):
 	"""Draw goban lines on the specified image.
 	Returns a new copy instead of altering the original image.
 	
 	Arguments:
 	image -- The image to draw on
-	boardSize -- The size of the board (9, 13, or 19)
+	boardSettings -- A 3-tuple containing the settings for the board
+	borderSize -- The size of the border around the board
 	"""
 	
 	COLOR = (0, 0, 0, 200)
 	STAR_POINT_SIZE = 2
 	LABEL_BOARD_SPACING = 10;
 	
-	boardSize -= 1
+	(boardSize, drawExtraStarPoints, starPointOffset) = boardSettings
 	newImage = image.copy()
 	imageWidth, imageHeight = newImage.size
-	innerWidth = imageWidth - borderSize * 2;
-	innerHeight = imageHeight - borderSize * 2;
+	innerWidth = imageWidth - borderSize * 2
+	innerHeight = imageHeight - borderSize * 2
 	draw = ImageDraw.Draw(newImage)
 	stepX = innerWidth / boardSize
 	stepY = innerHeight / boardSize
@@ -67,26 +72,26 @@ def draw_board(image, boardSize, borderSize, drawExtraStarPoints = True):
 	# Calculate star point positions
 	centerX = boardSize / 2 * stepX + borderSize
 	centerY = boardSize / 2 * stepY + borderSize
-	leftHalfX = 3 * stepX + borderSize
-	rightHalfX = (boardSize - 3) * stepX + borderSize
-	topHalfY = 3 * stepY + borderSize
-	bottomHalfY = (boardSize - 3) * stepY + borderSize
+	leftX = starPointOffset * stepX + borderSize
+	rightX = (boardSize - starPointOffset) * stepX + borderSize
+	topY = starPointOffset * stepY + borderSize
+	bottomY = (boardSize - starPointOffset) * stepY + borderSize
 	
 	# Draw star points
 	draw.ellipse([(centerX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
-	draw.ellipse([(leftHalfX - STAR_POINT_SIZE, topHalfY - STAR_POINT_SIZE), (leftHalfX + STAR_POINT_SIZE, topHalfY + STAR_POINT_SIZE)], fill = COLOR)
-	draw.ellipse([(rightHalfX - STAR_POINT_SIZE, topHalfY - STAR_POINT_SIZE), (rightHalfX + STAR_POINT_SIZE, topHalfY + STAR_POINT_SIZE)], fill = COLOR)
-	draw.ellipse([(leftHalfX - STAR_POINT_SIZE, bottomHalfY - STAR_POINT_SIZE), (leftHalfX + STAR_POINT_SIZE, bottomHalfY + STAR_POINT_SIZE)], fill = COLOR)
-	draw.ellipse([(rightHalfX - STAR_POINT_SIZE, bottomHalfY - STAR_POINT_SIZE), (rightHalfX + STAR_POINT_SIZE, bottomHalfY + STAR_POINT_SIZE)], fill = COLOR)
+	draw.ellipse([(leftX - STAR_POINT_SIZE, topY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, topY + STAR_POINT_SIZE)], fill = COLOR)
+	draw.ellipse([(rightX - STAR_POINT_SIZE, topY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, topY + STAR_POINT_SIZE)], fill = COLOR)
+	draw.ellipse([(leftX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], fill = COLOR)
+	draw.ellipse([(rightX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], fill = COLOR)
 	
 	if drawExtraStarPoints:
-		draw.ellipse([(centerX - STAR_POINT_SIZE, topHalfY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, topHalfY + STAR_POINT_SIZE)], fill = COLOR)
-		draw.ellipse([(leftHalfX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (leftHalfX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
-		draw.ellipse([(centerX - STAR_POINT_SIZE, bottomHalfY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, bottomHalfY + STAR_POINT_SIZE)], fill = COLOR)
-		draw.ellipse([(rightHalfX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (rightHalfX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
+		draw.ellipse([(centerX - STAR_POINT_SIZE, topY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, topY + STAR_POINT_SIZE)], fill = COLOR)
+		draw.ellipse([(leftX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
+		draw.ellipse([(centerX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], fill = COLOR)
+		draw.ellipse([(rightX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
 	
 	return newImage
 
-#board = loop_image(500, 500, boardTexture);
-#board = draw_board(board, 19, 50)
+#board = draw_loop_image(500, 500, BOARD_TEXTURE);
+#board = draw_board(board, BOARD_SETTINGS_19, 50)
 #board.save("test.png")
