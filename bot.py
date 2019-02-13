@@ -16,6 +16,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    global commands, boardSizes, challenges
     if ("hi bot-chan" in message.content.lower()):
         await client.send_message(message.channel, "hi!")
 
@@ -32,8 +33,22 @@ async def on_message(message):
             await client.send_message(message.channel, f"Ummm, no habla wrong command!")
             return 0
 
-        if (command == commands[0]):
-            pass
+        if (command == commands[0] or command == commands[2]):
+            if (len(message.raw_mentions) != 1):
+                await client.send_message(message.channel, f"You have to mention the person that challenged you!")
+            else:
+                exists = False
+                for board in boardSizes:
+                    challengeID = board+str(int(message.raw_mentions[0])+int(message.author.id))
+                    if ([message.raw_mentions[0], challengeID] in challenges):
+                        exists = True
+                        challenges = [x for x in challenges if x != [message.raw_mentions[0], challengeID]] #remove challengeID from challenges
+                        if (command == commands[0]):
+                            make_game(challengeID)
+                            await client.send_message(message.channel, f"Challenge accepted!")
+                        else:
+                            await client.send_message(message.channel, f"Challenge declined!")
+                if (not exists): await client.send_message(message.channel, f"No such challenge exists!")
 
         #challenge @user board
         if (command == commands[1]):
@@ -47,16 +62,15 @@ async def on_message(message):
                 await client.send_message(message.channel, f"Oh no... you entered an invalid board size!")
             else:
                 challengeID = contents[1]+str(int(message.raw_mentions[0])+int(message.author.id))
-                if (challengeID not in challenges): 
-                    challenges.append(challengeID)
+                if ([message.author.id, challengeID] not in challenges and [message.raw_mentions[0], challengeID] not in challenges): 
+                    challenges.append([message.author.id, challengeID])
                     await client.send_message(message.channel, f"Challenge sent!")
                 else:
                     await client.send_message(message.channel, f"Challenge between those two players already exists!")
 
-        if (command == commands[2]):
-            pass
         if (command == commands[3]):
             pass
-
+def make_game(challengeID):
+    return 0
 
 client.run("NTQ1MzA2NDg3MTkxMjQwNzA0.D0Xv8w.e7L44QaHK6ndZigjkSTWGchrEZ8")
