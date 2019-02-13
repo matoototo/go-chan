@@ -33,7 +33,8 @@ def draw_board(image, boardSize, borderSize, drawExtraStarPoints = True):
 	"""
 	
 	COLOR = (0, 0, 0, 200)
-	STAR_POINT_SIZE = 3
+	STAR_POINT_SIZE = 2
+	LABEL_BOARD_SPACING = 10;
 	
 	boardSize -= 1
 	newImage = image.copy()
@@ -44,16 +45,24 @@ def draw_board(image, boardSize, borderSize, drawExtraStarPoints = True):
 	stepX = innerWidth / boardSize
 	stepY = innerHeight / boardSize
 	
-	# Draw lines
+	# Draw lines and labels
 	for i in range(0, boardSize + 1):
 		x = borderSize + stepX * i;
+		label = chr(ord('A') + i);
+		labelWidth, labelHeight = draw.textsize(label)
 		
 		draw.line([(x, borderSize), (x, innerHeight + borderSize)], fill = COLOR)
+		draw.text((x - labelWidth / 2, borderSize - labelHeight - LABEL_BOARD_SPACING), label, COLOR)
+		draw.text((x - labelWidth / 2, borderSize + innerHeight + LABEL_BOARD_SPACING), label, COLOR)
 	
 	for i in range(0, boardSize + 1):
 		y = borderSize + stepY * i;
+		label = str(i);
+		labelWidth, labelHeight = draw.textsize(label)
 		
 		draw.line([(borderSize, y), (innerWidth + borderSize, y)], fill = COLOR)
+		draw.text((borderSize - labelWidth - LABEL_BOARD_SPACING, y - labelHeight / 2), label, COLOR)
+		draw.text((borderSize + innerWidth + LABEL_BOARD_SPACING, y - labelHeight / 2), label, COLOR)
 	
 	# Calculate star point positions
 	centerX = boardSize / 2 * stepX + borderSize
@@ -79,5 +88,5 @@ def draw_board(image, boardSize, borderSize, drawExtraStarPoints = True):
 	return newImage
 
 #board = loop_image(500, 500, boardTexture);
-#board = draw_board(board, 19, 25)
+#board = draw_board(board, 19, 50)
 #board.save("test.png")
