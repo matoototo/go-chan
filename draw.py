@@ -23,7 +23,7 @@ def loop_image(width, height, texture):
 	
 	return board
 
-def draw_board(image, boardSize, drawExtraStarPoints = True):
+def draw_board(image, boardSize, borderSize, drawExtraStarPoints = True):
 	"""Draw goban lines on the specified image.
 	Returns a new copy instead of altering the original image.
 	
@@ -38,27 +38,32 @@ def draw_board(image, boardSize, drawExtraStarPoints = True):
 	boardSize -= 1
 	newImage = image.copy()
 	imageWidth, imageHeight = newImage.size
+	innerWidth = imageWidth - borderSize * 2;
+	innerHeight = imageHeight - borderSize * 2;
 	draw = ImageDraw.Draw(newImage)
-	stepX = imageWidth / boardSize
-	stepY = imageHeight / boardSize
+	stepX = innerWidth / boardSize
+	stepY = innerHeight / boardSize
 	
-	for i in range(1, boardSize):
-		x = stepX * i;
+	# Draw lines
+	for i in range(0, boardSize + 1):
+		x = borderSize + stepX * i;
 		
-		draw.line([(x, 0), (x, imageHeight)], fill = COLOR)
+		draw.line([(x, borderSize), (x, innerHeight + borderSize)], fill = COLOR)
 	
-	for i in range(1, boardSize):
-		y = stepY * i;
+	for i in range(0, boardSize + 1):
+		y = borderSize + stepY * i;
 		
-		draw.line([(0, y), (imageWidth, y)], fill = COLOR)
+		draw.line([(borderSize, y), (innerWidth + borderSize, y)], fill = COLOR)
 	
-	centerX = boardSize / 2 * stepX
-	centerY = boardSize / 2 * stepY
-	leftHalfX = 3 * stepX
-	rightHalfX = (boardSize - 3) * stepX
-	topHalfY = 3 * stepY
-	bottomHalfY = (boardSize - 3) * stepY
+	# Calculate star point positions
+	centerX = boardSize / 2 * stepX + borderSize
+	centerY = boardSize / 2 * stepY + borderSize
+	leftHalfX = 3 * stepX + borderSize
+	rightHalfX = (boardSize - 3) * stepX + borderSize
+	topHalfY = 3 * stepY + borderSize
+	bottomHalfY = (boardSize - 3) * stepY + borderSize
 	
+	# Draw star points
 	draw.ellipse([(centerX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
 	draw.ellipse([(leftHalfX - STAR_POINT_SIZE, topHalfY - STAR_POINT_SIZE), (leftHalfX + STAR_POINT_SIZE, topHalfY + STAR_POINT_SIZE)], fill = COLOR)
 	draw.ellipse([(rightHalfX - STAR_POINT_SIZE, topHalfY - STAR_POINT_SIZE), (rightHalfX + STAR_POINT_SIZE, topHalfY + STAR_POINT_SIZE)], fill = COLOR)
@@ -74,5 +79,5 @@ def draw_board(image, boardSize, drawExtraStarPoints = True):
 	return newImage
 
 #board = loop_image(500, 500, boardTexture);
-#board = draw_board(board, 19)
+#board = draw_board(board, 19, 25)
 #board.save("test.png")
