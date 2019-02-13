@@ -32,24 +32,22 @@ class VisualBoard:
 		self.stoneWhiteTexture = stoneWhiteTexture
 		self.baseImage = Image.new("RGBA", (width, height), (255, 255, 255, 255))
 		
-		self.draw_board_texture(boardTexture)
-		self.draw_board()
+		self.__draw_board_texture(boardTexture)
+		self.__draw_board()
 	
-	def draw_board_texture(self, texture):
+	def __draw_board_texture(self, texture):
+		"""Draws a texture on the internal image.
+		If the texture is smaller than the image it loops.
+		"""
+		
 		textureWidth, textureHeight = texture.size
 		
 		for x in range(0, self.width, textureWidth):
 			for y in range(0, self.height, textureHeight):
 				self.baseImage.paste(texture, (x, y))
 	
-	def draw_board(self):
-		"""Draw goban lines on the specified image.
-		Returns a new copy instead of altering the original image.
-		
-		Arguments:
-		image -- The image to draw on
-		boardSettings -- A 3-tuple containing the settings for the board
-		borderSize -- The size of the border around the board
+	def __draw_board(self):
+		"""Draw goban lines, labels and star points on the internal image.
 		"""
 		
 		COLOR = (0, 0, 0, 200)
