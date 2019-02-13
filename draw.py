@@ -35,8 +35,8 @@ def draw_board(image, boardSize):
 	newImage = image.copy()
 	imageWidth, imageHeight = newImage.size
 	draw = ImageDraw.Draw(newImage)
-	stepX = imageWidth / boardSize;
-	stepY = imageHeight / boardSize;
+	stepX = imageWidth / boardSize
+	stepY = imageHeight / boardSize
 	
 	for i in range(1, boardSize):
 		x = stepX * i;
