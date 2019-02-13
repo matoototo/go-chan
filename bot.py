@@ -7,6 +7,7 @@ from game import Game
 
 client = discord.Client()
 commands = ["accept", "challenge", "decline", "move"]
+challenges = []
 
 @client.event
 async def on_ready():
@@ -31,15 +32,15 @@ async def on_message(message):
             return 0
 
         if (command == commands[0]):
-
+            pass
         if (command == commands[1]):
             if (message.author.mention == contents[0]):
                 await client.send_message(message.channel, f"You can't challenge yourself!")
 
         if (command == commands[2]):
-        
+            pass
         if (command == commands[3]):
-        
+            pass
 
 
 client.run("NTQ1MzA2NDg3MTkxMjQwNzA0.D0Xv8w.e7L44QaHK6ndZigjkSTWGchrEZ8")
