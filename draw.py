@@ -5,6 +5,8 @@ stoneBlack = Image.open("assets/stone_black.png");
 stoneWhite = Image.open("assets/stone_white.png");
 
 def create_board(width, height, texture):
+	"""Create an image of a board of given size using an arbitrary texture"""
+	
 	board = Image.new("RGBA", (width, height), (255, 255, 255, 255))
 	textureWidth, textureHeight = texture.size
 	
