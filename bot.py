@@ -7,6 +7,7 @@ from game import Game
 
 client = discord.Client()
 commands = ["accept", "challenge", "decline", "move"]
+boardSizes = ["19", "13", "9"]
 challenges = []
 
 @client.event
@@ -33,9 +34,24 @@ async def on_message(message):
 
         if (command == commands[0]):
             pass
+
+        #challenge @user board
         if (command == commands[1]):
+            contents[1] = contents[1].split("x")[0] #try to change "_x_" to "_"
             if (message.author.mention == contents[0]):
                 await client.send_message(message.channel, f"You can't challenge yourself!")
+            elif (len(message.raw_mentions) != 1):
+                await client.send_message(message.channel, f"You have to mention the person you want to challenge!")
+            elif (contents[1] not in boardSizes):
+                contents[1] = contents[1].split("x")[0]
+                await client.send_message(message.channel, f"Oh no... you entered an invalid board size!")
+            else:
+                challengeID = contents[1]+str(int(message.raw_mentions[0])+message.author.id)
+                if (challengeID not in challenges): 
+                    challenges.append(challengeID)
+                    await client.send_message(message.channel, f"Challenge sent :)!")
+                else:
+                    await client.send_message(message.channel, f"Challenge between those two players already exists!")
 
         if (command == commands[2]):
             pass
