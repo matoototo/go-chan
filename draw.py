@@ -32,6 +32,7 @@ def draw_board(image, boardSize):
 	boardSize -- The size of the board (9, 13, or 19)
 	"""
 	
+	boardSize -= 1
 	newImage = image.copy()
 	imageWidth, imageHeight = newImage.size
 	draw = ImageDraw.Draw(newImage)
