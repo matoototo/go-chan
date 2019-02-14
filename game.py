@@ -1,3 +1,4 @@
+from draw import VisualBoard
 class Game:
     """
     boardString = FEN-like presentation of the board:
@@ -55,6 +56,9 @@ class Game:
         else: return -1
     def __is_legal (self, move):
         return True
+    def draw_goban (self):
+        goban = VisualBoard(self.challenge.boardSize)
+        goban.generate_image(self.stones).save("goban.png")
 class Challenge:
     def __init__ (self, challenger, challenged, boardSize):
         self.challenger = challenger
