@@ -16,6 +16,7 @@ class Game:
         self.boardString = str(self.challenge.boardSize**2)
         self.stones = self.__boardString_to_stones()
         self.blackToMove = True
+        self.historyBoardString = self.boardString
     def __boardString_to_stones (self):
         stones = [[0 for column in range(self.challenge.boardSize)] for row in range(self.challenge.boardSize)]
         #stones = [[0]*self.challenge.boardSize]*self.challenge.boardSize #set stones to 0
@@ -32,8 +33,8 @@ class Game:
     def __stones_to_boardString (self):
         boardString = ""
         blanks = 0
-        for stone_list in self.stones:
-            for stone in stone_list:
+        for stoneList in self.stones:
+            for stone in stoneList:
                 if (stone == 0): blanks += 1
                 else:
                     if (blanks != 0): boardString += f" {str(blanks)}"
@@ -46,16 +47,30 @@ class Game:
         self.boardString = newBoardString
         return 0
     def make_move (self, move):
-        if (self.__is_legal(move)):
+        if (self.__is_alive(move)):
             column = ord(move[0].upper())-65
             row = int(move[1:])
             if (self.blackToMove): self.stones[19-row][column] = 1
             else: self.stones[19-row][column] = 2
             self.blackToMove = not self.blackToMove
+            self.historyBoardString = self.boardString
             self.boardString = self.__stones_to_boardString()
         else: return -1
-    def __is_legal (self, move):
-        return True
+    def __is_alive (self, move):
+        if (self.__will_have_dead_stones(not self.blackToMove, move)): #suicidal moves only allowed if they capture an opponent's group
+            self.__remove_dead_stones(not self.blackToMove)
+            return False
+        else:
+            return not self.__will_have_dead_stones(self.blackToMove, move)
+    def __will_have_dead_stones (self, isBlack, move):
+        """
+        Tries move, loops through stones[][] and finds groups with no liberties of a particular color
+        """
+        return False
+    def __remove_dead_stones(self, isBlack):
+        """
+        Loops through stones[][] and removes groups with no liberties of a particular color
+        """
     def draw_goban (self):
         goban = VisualBoard(self.challenge.boardSize)
         goban.generate_image(self.stones).save("goban.png")
