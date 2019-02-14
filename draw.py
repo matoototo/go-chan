@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 BOARD_TEXTURE = Image.open("assets/board.png")
 STONE_BLACK_TEXTURE = Image.open("assets/stone_black.png")
@@ -60,25 +60,26 @@ class VisualBoard:
 		draw = ImageDraw.Draw(self.baseImage)
 		stepX = innerWidth / boardSize
 		stepY = innerHeight / boardSize
+		font = ImageFont.truetype("assets/font_fifteentwenty.otf", 12)
 		
 		# Draw lines and labels
 		for i in range(0, boardSize + 1):
 			x = self.borderSize + stepX * i
 			label = chr(ord('A') + i)
-			labelWidth, labelHeight = draw.textsize(label)
+			labelWidth, labelHeight = draw.textsize(label, font)
 			
-			draw.line([(x, self.borderSize), (x, innerHeight + self.borderSize)], fill = COLOR)
-			draw.text((x - labelWidth / 2, self.borderSize - labelHeight - LABEL_BOARD_SPACING), label, COLOR)
-			draw.text((x - labelWidth / 2, self.borderSize + innerHeight + LABEL_BOARD_SPACING), label, COLOR)
+			draw.line([(x, self.borderSize), (x, innerHeight + self.borderSize)], COLOR)
+			draw.text((x - labelWidth / 2, self.borderSize - labelHeight - LABEL_BOARD_SPACING), label, COLOR, font)
+			draw.text((x - labelWidth / 2, self.borderSize + innerHeight + LABEL_BOARD_SPACING), label, COLOR, font)
 		
 		for i in range(0, boardSize + 1):
 			y = self.borderSize + stepY * i
 			label = str(boardSize - i + 1)
-			labelWidth, labelHeight = draw.textsize(label)
+			labelWidth, labelHeight = draw.textsize(label, font)
 			
-			draw.line([(self.borderSize, y), (innerWidth + self.borderSize, y)], fill = COLOR)
-			draw.text((self.borderSize - labelWidth - LABEL_BOARD_SPACING, y - labelHeight / 2), label, COLOR)
-			draw.text((self.borderSize + innerWidth + LABEL_BOARD_SPACING, y - labelHeight / 2), label, COLOR)
+			draw.line([(self.borderSize, y), (innerWidth + self.borderSize, y)], COLOR)
+			draw.text((self.borderSize - labelWidth - LABEL_BOARD_SPACING, y - labelHeight / 2), label, COLOR, font)
+			draw.text((self.borderSize + innerWidth + LABEL_BOARD_SPACING, y - labelHeight / 2), label, COLOR, font)
 		
 		# Calculate star point positions
 		centerX = boardSize / 2 * stepX + self.borderSize
@@ -89,17 +90,17 @@ class VisualBoard:
 		bottomY = (boardSize - starPointOffset) * stepY + self.borderSize
 		
 		# Draw star points
-		draw.ellipse([(centerX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
-		draw.ellipse([(leftX - STAR_POINT_SIZE, topY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, topY + STAR_POINT_SIZE)], fill = COLOR)
-		draw.ellipse([(rightX - STAR_POINT_SIZE, topY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, topY + STAR_POINT_SIZE)], fill = COLOR)
-		draw.ellipse([(leftX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], fill = COLOR)
-		draw.ellipse([(rightX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], fill = COLOR)
+		draw.ellipse([(centerX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], COLOR)
+		draw.ellipse([(leftX - STAR_POINT_SIZE, topY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, topY + STAR_POINT_SIZE)], COLOR)
+		draw.ellipse([(rightX - STAR_POINT_SIZE, topY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, topY + STAR_POINT_SIZE)], COLOR)
+		draw.ellipse([(leftX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], COLOR)
+		draw.ellipse([(rightX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], COLOR)
 		
 		if drawExtraStarPoints:
-			draw.ellipse([(centerX - STAR_POINT_SIZE, topY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, topY + STAR_POINT_SIZE)], fill = COLOR)
-			draw.ellipse([(leftX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
-			draw.ellipse([(centerX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], fill = COLOR)
-			draw.ellipse([(rightX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
+			draw.ellipse([(centerX - STAR_POINT_SIZE, topY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, topY + STAR_POINT_SIZE)], COLOR)
+			draw.ellipse([(leftX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], COLOR)
+			draw.ellipse([(centerX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], COLOR)
+			draw.ellipse([(rightX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], COLOR)
 	
 	def generate_image(self, stones):
 		"""Generates a visual representation of a Go game.
