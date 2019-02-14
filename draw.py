@@ -100,6 +100,16 @@ class VisualBoard:
 			draw.ellipse([(leftX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
 			draw.ellipse([(centerX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], fill = COLOR)
 			draw.ellipse([(rightX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], fill = COLOR)
+	
+	def generate_image(self, stones):
+		"""Generates a visual representation of a Go game.
+		The dimensions of the passed array have to match the board size.
+		
+		Arguments:
+		stones -- A 2D-array of values either 0 (no stone), 1 (black stone) or 2 (white stone)
+		"""
+		
+		pass
 
 #board = VisualBoard(500, 500, 50, BOARD_SETTINGS_19, BOARD_TEXTURE, STONE_BLACK_TEXTURE, STONE_WHITE_TEXTURE)
 #board.baseImage.save("test.png")
