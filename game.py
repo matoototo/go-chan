@@ -12,7 +12,8 @@ class Game:
     """
     def __init__ (self, challenge):
         self.challenge = challenge
-        self.boardString = self.challenge.boardSize**2
+        self.boardString = str(self.challenge.boardSize**2)
+        self.stones = self.__boardString_to_stones()
     def __boardString_to_stones (self):
         stones = [[0 for column in range(self.challenge.boardSize)] for row in range(self.challenge.boardSize)]
         #stones = [[0]*self.challenge.boardSize]*self.challenge.boardSize #set stones to 0
@@ -26,6 +27,19 @@ class Game:
                 elif (character.lower() == "w"): stones[int(index/19)][index%19] = 2
                 index += 1
         return stones
+    def __stones_to_boardString (self):
+        boardString = ""
+        blanks = 0
+        for stone_list in self.stones:
+            for stone in stone_list:
+                if (stone == 0): blanks += 1
+                else:
+                    if (blanks != 0): boardString += f" {str(blanks)}"
+                    if (stone == 1): boardString += " b"
+                    if (stone == 2): boardString += " w"
+                    blanks = 0
+        if (blanks != 0): boardString += f" {str(blanks)}"
+        return boardString[1:]
     def set_boardString (self, newBoardString):
         self.boardString = newBoardString
         return 0
