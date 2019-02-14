@@ -14,6 +14,7 @@ class Game:
         self.challenge = challenge
         self.boardString = str(self.challenge.boardSize**2)
         self.stones = self.__boardString_to_stones()
+        self.blackToMove = True
     def __boardString_to_stones (self):
         stones = [[0 for column in range(self.challenge.boardSize)] for row in range(self.challenge.boardSize)]
         #stones = [[0]*self.challenge.boardSize]*self.challenge.boardSize #set stones to 0
@@ -43,8 +44,17 @@ class Game:
     def set_boardString (self, newBoardString):
         self.boardString = newBoardString
         return 0
-    
-
+    def make_move (self, move):
+        if (self.__is_legal(move)):
+            column = ord(move[0].upper())-65
+            row = int(move[1:])
+            if (self.blackToMove): self.stones[19-row][column] = 1
+            else: self.stones[19-row][column] = 2
+            self.blackToMove = not self.blackToMove
+            self.boardString = self.__stones_to_boardString()
+        else: return -1
+    def __is_legal (self, move):
+        return True
 class Challenge:
     def __init__ (self, challenger, challenged, boardSize):
         self.challenger = challenger
