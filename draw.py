@@ -11,9 +11,8 @@ BOARD_SETTINGS_19 = (19, True, 3)
 class VisualBoard:
 	"""Contains data for the visual representation of a Go board."""
 	
-	def __init__(self, width, height, borderSize, settings, boardTexture, stoneBlackTexture, stoneWhiteTexture):
+	def __init__(self, boardSize, width = 750, height = 750, borderSize = 75, boardTexture = BOARD_TEXTURE, stoneBlackTexture = STONE_BLACK_TEXTURE, stoneWhiteTexture = STONE_WHITE_TEXTURE):
 		"""Instantiates a new board from the given data.
-		
 		Arguments:
 		width -- The board width
 		height -- The board height
@@ -29,9 +28,12 @@ class VisualBoard:
 		self.innerWidth = width - borderSize * 2
 		self.innerHeight = height - borderSize * 2
 		self.borderSize = borderSize
-		self.settings = settings
 		self.baseImage = Image.new("RGBA", (width, height), (255, 255, 255, 255))
-		
+
+		if (boardSize == 19): self.settings = BOARD_SETTINGS_19
+		if (boardSize == 13): self.settings = BOARD_SETTINGS_13
+		if (boardSize == 9): self.settings = BOARD_SETTINGS_9
+
 		(boardSize, _, _) = self.settings
 		stoneWidth = int(self.innerWidth / boardSize)
 		stoneHeight = int(self.innerWidth / boardSize)
@@ -145,7 +147,7 @@ class VisualBoard:
 		
 		return newImage
 
-#board = VisualBoard(750, 750, 75, BOARD_SETTINGS_19, BOARD_TEXTURE, STONE_BLACK_TEXTURE, STONE_WHITE_TEXTURE)
+#board = VisualBoard(19)
 #stones = [
 #	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 #	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
