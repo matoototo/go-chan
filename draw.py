@@ -45,6 +45,9 @@ class VisualBoard:
 	def __draw_board_texture(self, texture):
 		"""Draws a texture on the internal image.
 		If the texture is smaller than the image it loops.
+		
+		Arguments:
+		texture -- The base texture to use for the board
 		"""
 		
 		textureWidth, textureHeight = texture.size
