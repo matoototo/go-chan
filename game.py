@@ -60,7 +60,7 @@ class Game:
             self.__remove_dead_stones(not self.blackToMove)
             return True
         else:
-            return not self.__fill_dead_stones(self.blackToMove, move)
+            return not self.__find_dead_stones(self.blackToMove, move)
     def __find_dead_stones (self, isBlack, move):
         """
         Tries move, loops through stones[][] and finds groups with no liberties of a particular color
