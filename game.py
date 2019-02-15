@@ -117,8 +117,6 @@ class Game:
                     if not groupIsAlive and stone == color:
                         dead += group
                     checked += group
-        column = ord(move[0].upper())-65
-        row = int(move[1:])
         self.stones[19-savedStoneRow][savedStoneColumn] = savedStone
         if (dead != []): return dead
         else: return False
