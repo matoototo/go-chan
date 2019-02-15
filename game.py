@@ -6,7 +6,7 @@ class Game:
             - W: white stone
             - B: black stone
             - number: number of blanks
-        - each character is divided by a space
+        - the characters are separated by a space
         - example:
             - 19x19 start position: "361"
             - 19x19 with a black stone on D16: "60 B 300"
@@ -19,15 +19,14 @@ class Game:
         self.historyBoardString = self.boardString
     def __boardString_to_stones (self):
         stones = [[0 for column in range(self.challenge.boardSize)] for row in range(self.challenge.boardSize)]
-        #stones = [[0]*self.challenge.boardSize]*self.challenge.boardSize #set stones to 0
         index = 0
         for character in self.boardString.split():
             try:
                 numberOfBlanks = int(character)
                 index += numberOfBlanks
             except:
-                if   (character.lower() == "b"): stones[int(index/19)][index%19] = 1
-                elif (character.lower() == "w"): stones[int(index/19)][index%19] = 2
+                if   (character.upper() == "B"): stones[int(index/19)][index%19] = 1
+                elif (character.upper() == "w"): stones[int(index/19)][index%19] = 2
                 index += 1
         return stones
     def __stones_to_boardString (self):
@@ -38,8 +37,8 @@ class Game:
                 if (stone == 0): blanks += 1
                 else:
                     if (blanks != 0): boardString += f" {str(blanks)}"
-                    if (stone == 1): boardString += " b"
-                    if (stone == 2): boardString += " w"
+                    if (stone == 1): boardString += " B"
+                    if (stone == 2): boardString += " W"
                     blanks = 0
         if (blanks != 0): boardString += f" {str(blanks)}"
         return boardString[1:]
@@ -57,19 +56,20 @@ class Game:
             self.boardString = self.__stones_to_boardString()
         else: return -1
     def __is_alive (self, move):
-        if (self.__will_have_dead_stones(not self.blackToMove, move)): #suicidal moves only allowed if they capture an opponent's group
+        if (self.__find_dead_stones(not self.blackToMove, move)): #suicidal moves only allowed if they capture an opponent's group
             self.__remove_dead_stones(not self.blackToMove)
-            return False
+            return True
         else:
-            return not self.__will_have_dead_stones(self.blackToMove, move)
-    def __will_have_dead_stones (self, isBlack, move):
+            return not self.__fill_dead_stones(self.blackToMove, move)
+    def __find_dead_stones (self, isBlack, move):
         """
         Tries move, loops through stones[][] and finds groups with no liberties of a particular color
+        If found, returns an array with dead stone indices, else return False
         """
         return False
     def __remove_dead_stones(self, isBlack):
         """
-        Loops through stones[][] and removes groups with no liberties of a particular color
+        Calls __find_dead_stones() and removes the returned dead stones
         """
     def draw_goban (self):
         goban = VisualBoard(self.challenge.boardSize)
