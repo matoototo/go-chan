@@ -26,7 +26,7 @@ class Game:
                 index += numberOfBlanks
             except:
                 if   (character.upper() == "B"): stones[int(index/19)][index%19] = 1
-                elif (character.upper() == "w"): stones[int(index/19)][index%19] = 2
+                elif (character.upper() == "W"): stones[int(index/19)][index%19] = 2
                 index += 1
         return stones
     def __stones_to_boardString (self):
@@ -44,6 +44,7 @@ class Game:
         return boardString[1:]
     def set_boardString (self, newBoardString):
         self.boardString = newBoardString
+        self.stones = self.__boardString_to_stones()
         return 0
     def make_move (self, move):
         if (self.__is_alive(move)):
@@ -54,7 +55,15 @@ class Game:
             self.blackToMove = not self.blackToMove
             self.historyBoardString = self.boardString
             self.boardString = self.__stones_to_boardString()
+            return 0
         else: return -1
+    def __force_make_move (self, move):
+            column = ord(move[0].upper())-65
+            row = int(move[1:])
+            if (self.blackToMove): self.stones[19-row][column] = 1
+            else: self.stones[19-row][column] = 2
+            self.historyBoardString = self.boardString
+            self.boardString = self.__stones_to_boardString()
     def __is_alive (self, move):
         if (self.__find_dead_stones(not self.blackToMove, move)): #suicidal moves only allowed if they capture an opponent's group
             self.__remove_dead_stones(not self.blackToMove)
@@ -62,11 +71,57 @@ class Game:
         else:
             return not self.__find_dead_stones(self.blackToMove, move)
     def __find_dead_stones (self, isBlack, move):
+        def get_friendly_neighbours (row, column, group): #returns adjacent same color stones (4 maximum) and number of liberties
+            liberties = 0
+            friendly = []
+            if row > 0:
+                if self.stones[row-1][column] == color and [row-1, column] not in group: friendly.append([row-1, column])
+                if self.stones[row-1][column] == 0: liberties += 1
+            if row < 18:
+                if self.stones[row+1][column] == color and [row+1, column] not in group: friendly.append([row+1, column])
+                if self.stones[row+1][column] == 0: liberties += 1
+            if column > 0:
+                if self.stones[row][column-1] == color and [row, column-1] not in group: friendly.append([row, column-1])
+                if self.stones[row][column-1] == 0: liberties += 1
+            if column < 18:
+                if self.stones[row][column+1] == color and [row, column+1] not in group: friendly.append([row, column+1])
+                if self.stones[row][column+1] == 0: liberties += 1
+            friendly.append(liberties)
+            return friendly
         """
         Tries move, loops through stones[][] and finds groups with no liberties of a particular color
         If found, returns an array with dead stone indices, else return False
         """
-        return False
+        dead = []
+        checked = []
+        if (isBlack): color = 1
+        else: color = 2
+        savedStoneColumn = ord(move[0].upper())-65
+        savedStoneRow = int(move[1:])
+        savedStone = self.stones[19-savedStoneRow][savedStoneColumn]
+        self.__force_make_move(move)
+        for row, array in enumerate(self.stones):
+            for column, stone in enumerate(array):
+                queue = [] #neighbour queue
+                group = [[row, column]] #current group
+                groupIsAlive = False
+                if ([row, column] not in checked):
+                    if (stone == color):
+                        queue = get_friendly_neighbours(row, column, group)[:-1]
+                        if (get_friendly_neighbours(row, column, group)[-1]) != 0: groupIsAlive = True
+                        while (queue != []):
+                            _row, _column = queue.pop(0) 
+                            queue += get_friendly_neighbours(_row, _column, group)[:-1]
+                            if (get_friendly_neighbours(_row, _column, group)[-1]) != 0: groupIsAlive = True
+                            group.append([_row, _column])
+                    if not groupIsAlive and stone == color:
+                        dead += group
+                    checked += group
+        column = ord(move[0].upper())-65
+        row = int(move[1:])
+        self.stones[19-savedStoneRow][savedStoneColumn] = savedStone
+        if (dead != []): return dead
+        else: return False
     def __remove_dead_stones(self, isBlack):
         """
         Calls __find_dead_stones() and removes the returned dead stones
