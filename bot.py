@@ -9,6 +9,7 @@ client = discord.Client()
 commands = ["accept", "challenge", "decline", "move"]
 boardSizes = ["19", "13", "9"]
 challenges = []
+games = []
 
 @client.event
 async def on_ready():
@@ -79,6 +80,7 @@ async def on_message(message):
         if (command == commands[3]):
             pass
 def make_game(challenge):
+    games.append(Game(challenge))
     return 0
 
 client.run("NTQ1MzA2NDg3MTkxMjQwNzA0.D0Xv8w.e7L44QaHK6ndZigjkSTWGchrEZ8")
