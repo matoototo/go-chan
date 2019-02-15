@@ -76,16 +76,16 @@ class Game:
             friendly = []
             if row > 0:
                 if self.stones[row-1][column] == color and [row-1, column] not in group: friendly.append([row-1, column])
-                if self.stones[row-1][column] == 0: liberties += 1
+                elif self.stones[row-1][column] == 0: liberties += 1
             if row < 18:
                 if self.stones[row+1][column] == color and [row+1, column] not in group: friendly.append([row+1, column])
-                if self.stones[row+1][column] == 0: liberties += 1
+                elif self.stones[row+1][column] == 0: liberties += 1
             if column > 0:
                 if self.stones[row][column-1] == color and [row, column-1] not in group: friendly.append([row, column-1])
-                if self.stones[row][column-1] == 0: liberties += 1
+                elif self.stones[row][column-1] == 0: liberties += 1
             if column < 18:
                 if self.stones[row][column+1] == color and [row, column+1] not in group: friendly.append([row, column+1])
-                if self.stones[row][column+1] == 0: liberties += 1
+                elif self.stones[row][column+1] == 0: liberties += 1
             friendly.append(liberties)
             return friendly
         """
@@ -107,12 +107,14 @@ class Game:
                 groupIsAlive = False
                 if ([row, column] not in checked):
                     if (stone == color):
-                        queue = get_friendly_neighbours(row, column, group)[:-1]
-                        if (get_friendly_neighbours(row, column, group)[-1]) != 0: groupIsAlive = True
+                        neighbours = get_friendly_neighbours(row, column, group)
+                        queue = neighbours[:-1]
+                        if (neighbours[-1]) != 0: groupIsAlive = True
                         while (queue != []):
                             _row, _column = queue.pop(0) 
-                            queue += get_friendly_neighbours(_row, _column, group)[:-1]
-                            if (get_friendly_neighbours(_row, _column, group)[-1]) != 0: groupIsAlive = True
+                            _neighbours = get_friendly_neighbours(_row, _column, group)
+                            queue += _neighbours[:-1]
+                            if (_neighbours[-1]) != 0: groupIsAlive = True
                             group.append([_row, _column])
                     if not groupIsAlive and stone == color:
                         dead += group
