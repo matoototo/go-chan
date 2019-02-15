@@ -1,3 +1,4 @@
 *.png
 !assets/*.png
 *.pyc
+.vscode/
