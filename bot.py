@@ -4,12 +4,14 @@
 
 import discord
 from game import Game, Challenge
+from player import Player
 
 client = discord.Client()
 commands = ["accept", "challenge", "decline", "move"]
 boardSizes = ["19", "13", "9"]
 challenges = []
 games = []
+players = []
 
 @client.event
 async def on_ready():
@@ -40,7 +42,7 @@ async def on_message(message):
             else:
                 exists = False
                 for board in boardSizes:
-                    challenge = Challenge(message.raw_mentions[0], message.author.id, board)
+                    challenge = Challenge(message.raw_mentions[0], message.author.id, int(board))
                     for i in challenges:
                         if (i.challenger == challenge.challenger and i.challenged == challenge.challenged and i.boardSize == challenge.boardSize):
                             exists = True
@@ -80,7 +82,20 @@ async def on_message(message):
             pass
 
 def make_game(challenge):
-    games.append(Game(challenge))
+    game = Game(challenge)
+    games.append(game)
+    firstExists = False
+    secondExists = False
+    for player in players:
+        if (player.id == challenge.challenger):
+            firstExists = True
+            player.set_currentGame(game)
+        if (player.id == challenge.challenged):
+            secondExists = True
+            player.set_currentGame(game)
+    if not firstExists: players.append(Player(challenge.challenger, game))
+    if not secondExists: players.append(Player(challenge.challenged, game))
+    #should send blank board
     return 0
 
 client.run("NTQ1MzA2NDg3MTkxMjQwNzA0.D0Xv8w.e7L44QaHK6ndZigjkSTWGchrEZ8")
