@@ -66,7 +66,7 @@ async def on_message(message):
                 await client.send_message(message.channel, f"Oh no... you entered an invalid board size!")
             else:
                 exists = False
-                challenge = Challenge(message.author.id, message.raw_mentions[0], contents[1])
+                challenge = Challenge(message.author.id, message.raw_mentions[0], int(contents[1]))
                 for i in challenges:
                     if (i.challenger == challenge.challenger and i.challenged == challenge.challenged):
                         exists = True
