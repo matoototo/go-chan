@@ -13,6 +13,8 @@ class Game:
     """
     def __init__ (self, challenge):
         self.challenge = challenge
+        self.blackPlayer = challenge.challenger
+        self.whitePlayer = challenge.challenged
         self.boardString = str(self.challenge.boardSize**2)
         self.stones = self.__boardString_to_stones()
         self.blackToMove = True
@@ -129,6 +131,7 @@ class Game:
     def draw_goban (self):
         goban = VisualBoard(self.challenge.boardSize)
         goban.generate_image(self.stones).save("goban.png")
+
 class Challenge:
     def __init__ (self, challenger, challenged, boardSize):
         self.challenger = challenger
