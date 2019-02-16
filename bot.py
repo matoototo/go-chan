@@ -79,6 +79,21 @@ async def on_message(message):
                     await client.send_message(message.channel, f"Challenge sent!")
                 
         if (command == "move"):
+            inGame = False
+            for player in players: 
+                if (player.id == message.author.id): 
+                    if (player.currentGame != False): 
+                        inGame = True
+                        playerIndex = players.index(player)
+                    break
+            if inGame:
+                if   (players[playerIndex].currentGame.blackPlayer == message.author.id and players[playerIndex].currentGame.blackToMove):
+                      players[playerIndex].currentGame.make_move(contents[0])
+                elif (players[playerIndex].currentGame.whitePlayer == message.author.id and not players[playerIndex].currentGame.blackToMove):
+                      players[playerIndex].currentGame.make_move(contents[0])
+                else:
+                    await client.send_message(message.channel, f"It's not your move!")
+            else: await client.send_message(message.channel, f"You're not in a game!")
             pass
 
 def make_game(challenge):
