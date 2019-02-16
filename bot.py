@@ -34,7 +34,7 @@ async def on_message(message):
             await client.send_message(message.channel, f"Ummm, no habla wrong command!")
             return 0
 
-        if (command == commands[0] or command == commands[2]):
+        if (command == "accept" or command == "decline"):
             if (len(message.raw_mentions) != 1):
                 await client.send_message(message.channel, f"You have to mention the person that challenged you!")
             else:
@@ -42,7 +42,7 @@ async def on_message(message):
                 for board in boardSizes:
                     challenge = Challenge(message.raw_mentions[0], message.author.id, board)
                     for i in challenges:
-                        if (i.challenger == challenge.challenger and i.challenged == challenge.challenged):
+                        if (i.challenger == challenge.challenger and i.challenged == challenge.challenged and i.boardSize == challenge.boardSize):
                             exists = True
                             challenges = [x for x in challenges if x != i] #remove challenge from challenges
                             if (command == commands[0]):
@@ -53,7 +53,7 @@ async def on_message(message):
                 if (not exists): await client.send_message(message.channel, f"No such challenge exists!")
 
         #challenge @user board
-        if (command == commands[1]):
+        if (command == "challenge"):
             contents[1] = contents[1].split("x")[0] #try to change "_x_" to "_"
             if (message.author.mention == contents[0]):
                 await client.send_message(message.channel, f"You can't challenge yourself!")
@@ -65,11 +65,10 @@ async def on_message(message):
             else:
                 exists = False
                 challenge = Challenge(message.author.id, message.raw_mentions[0], contents[1])
-                challengeFlipped = Challenge(message.raw_mentions[0], message.author.id, contents[1])
                 for i in challenges:
                     if (i.challenger == challenge.challenger and i.challenged == challenge.challenged):
                         exists = True
-                    if (i.challenger == challengeFlipped.challenger and i.challenged == challengeFlipped.challenged):
+                    elif (i.challenger == challenge.challenged and i.challenged == challenge.challenger):
                         exists = True
                 if (exists):
                     await client.send_message(message.channel, f"Challenge between those two players already exists!")
@@ -77,8 +76,9 @@ async def on_message(message):
                     challenges.append(challenge.__copy__())
                     await client.send_message(message.channel, f"Challenge sent!")
                 
-        if (command == commands[3]):
+        if (command == "move"):
             pass
+
 def make_game(challenge):
     games.append(Game(challenge))
     return 0
