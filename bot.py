@@ -89,9 +89,9 @@ async def on_message(message):
                         playerIndex = players.index(player)
                     break
             if inGame:
-                if   (players[playerIndex].currentGame.blackPlayer == message.author.id and players[playerIndex].currentGame.blackToMove):
+                if   (players[playerIndex].currentGame.blackPlayer.id == message.author.id and players[playerIndex].currentGame.blackToMove):
                       players[playerIndex].currentGame.make_move(contents[0])
-                elif (players[playerIndex].currentGame.whitePlayer == message.author.id and not players[playerIndex].currentGame.blackToMove):
+                elif (players[playerIndex].currentGame.whitePlayer.id == message.author.id and not players[playerIndex].currentGame.blackToMove):
                       players[playerIndex].currentGame.make_move(contents[0])
                 else:
                     await client.send_message(message.channel, f"It's not your move!")
