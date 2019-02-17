@@ -37,25 +37,29 @@ async def on_message(message):
             return 0
 
         if (command == "accept" or command == "decline"):
-            if (len(message.raw_mentions) != 1):
-                await client.send_message(message.channel, f"You have to mention the person that challenged you!")
-            else:
-                exists = False
-                for board in boardSizes:
-                    challenge = Challenge(message.raw_mentions[0], message.author.id, int(board))
-                    for i in challenges:
-                        if (i.challenger == challenge.challenger and i.challenged == challenge.challenged and i.boardSize == challenge.boardSize):
-                            exists = True
-                            challenges = [x for x in challenges if x != i] #remove challenge from challenges
-                            if (command == commands[0]):
-                                acceptedGame = make_game(challenge)
-                                await client.send_message(message.channel, f"Challenge accepted!")
-                                acceptedGame.draw_goban()
-                                await client.send_file(message.channel, "goban.png")
-                            else:
-                                await client.send_message(message.channel, f"Challenge declined!")
-                if (not exists): await client.send_message(message.channel, f"No such challenge exists!")
-
+            if (not in_game(message.author.id)):
+                if (len(message.raw_mentions) != 1):
+                    await client.send_message(message.channel, f"You have to mention the person that challenged you!")
+                else:
+                    exists = False
+                    for board in boardSizes:
+                        challenge = Challenge(message.raw_mentions[0], message.author.id, int(board))
+                        for i in challenges:
+                            if (i.challenger == challenge.challenger and i.challenged == challenge.challenged and i.boardSize == challenge.boardSize):
+                                exists = True
+                                if (command == commands[0]):
+                                    if (not in_game(message.raw_mentions[0])):
+                                        challenges = [x for x in challenges if x != i] #remove challenge from challenges
+                                        acceptedGame = make_game(challenge)
+                                        await client.send_message(message.channel, f"Challenge accepted!")
+                                        acceptedGame.draw_goban()
+                                        await client.send_file(message.channel, "goban.png")
+                                    else: await client.send_message(message.channel, f"They're already in a game, try again later!")
+                                else:
+                                    challenges = [x for x in challenges if x != i] #remove challenge from challenges
+                                    await client.send_message(message.channel, f"Challenge declined!")
+                    if (not exists): await client.send_message(message.channel, f"No such challenge exists!")
+            else: await client.send_message(message.channel, f"You're already in a game, you can't respond to challenges at this moment!")
         #challenge @user board
         if (command == "challenge"):
             contents[1] = contents[1].split("x")[0] #try to change "_x_" to "_"
@@ -99,7 +103,11 @@ async def on_message(message):
                 await client.send_file(message.channel, 'goban.png')
             else: await client.send_message(message.channel, f"You're not in a game!")
             pass
-
+def in_game(playerID):
+    for player in players:
+        if (player.id == playerID):
+            if (player.currentGame): return True
+    return False
 def make_game(challenge):
     game = Game(challenge)
     games.append(game)
