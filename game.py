@@ -21,6 +21,7 @@ class Game:
         self.historyBoardString = self.boardString
         self.moves = []
         self.passCounter = 0
+        self.prisoners = [0, 0] #B, W
     def __boardString_to_stones (self):
         stones = [[0 for column in range(self.challenge.boardSize)] for row in range(self.challenge.boardSize)]
         index = 0
@@ -136,9 +137,17 @@ class Game:
         self.stones[19-savedStoneRow][savedStoneColumn] = savedStone
         if (dead != []): return dead
         else: return False
+    def __remove_dead_stones(self, isBlack, move):
         """
         Calls __find_dead_stones() and removes the returned dead stones
         """
+        stones = self.__find_dead_stones(isBlack, move)
+        if stones:
+            for stone in stones:
+                self.stones[stone[0]][stone[1]] = 0
+                if (isBlack): self.prisoners[1] += 1
+                else: self.prisoners[0] += 1
+
     def draw_goban (self):
         goban = VisualBoard(self.challenge.boardSize)
         goban.generate_image(self.stones).save("goban.png")
