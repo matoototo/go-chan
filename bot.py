@@ -7,7 +7,7 @@ from game import Game, Challenge
 from player import Player
 
 client = discord.Client()
-commands = ["accept", "challenge", "decline", "move"]
+commands = ["accept", "challenge", "decline", "move", "withdraw"]
 boardSizes = ["19", "13", "9"]
 challenges = []
 games = []
@@ -103,6 +103,16 @@ async def on_message(message):
                 await client.send_file(message.channel, 'goban.png')
             else: await client.send_message(message.channel, f"You're not in a game!")
             pass
+        if (command == "withdraw"):
+            exists = False
+            for board in boardSizes:
+                challenge = Challenge(message.author.id, message.raw_mentions[0], int(board))
+                for i in challenges:
+                    if (i.challenger == challenge.challenger and i.challenged == challenge.challenged and i.boardSize == challenge.boardSize):
+                        exists = True
+                        challenges = [x for x in challenges if x != i] #remove challenge from challenges
+                        await client.send_message(message.channel, f"Challenge withdrawn!")
+            if (not exists): await client.send_message(message.channel, f"Challenge doesn't exist!")
 def in_game(playerID):
     for player in players:
         if (player.id == playerID):
