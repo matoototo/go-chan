@@ -21,7 +21,7 @@ class Game:
         self.historyBoardString = self.boardString
         self.moves = []
         self.passCounter = 0
-        self.prisoners = [0, 0] #B, W
+        self.prisoners = [0, 0] #B, W (refers to the number of points B (W) will get from prisoners, not the number of 'dead' (imprisoned) B (W) stones)
     def __boardString_to_stones (self):
         stones = [[0 for column in range(self.challenge.boardSize)] for row in range(self.challenge.boardSize)]
         index = 0
