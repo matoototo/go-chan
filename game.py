@@ -19,6 +19,7 @@ class Game:
         self.stones = self.__boardString_to_stones()
         self.blackToMove = True
         self.historyBoardString = self.boardString
+        self.moves = []
     def __boardString_to_stones (self):
         stones = [[0 for column in range(self.challenge.boardSize)] for row in range(self.challenge.boardSize)]
         index = 0
@@ -57,6 +58,7 @@ class Game:
             self.blackToMove = not self.blackToMove
             self.historyBoardString = self.boardString
             self.boardString = self.__stones_to_boardString()
+            self.moves.append(move)
             return 0
         else: return -1
     def __force_make_move (self, move):
