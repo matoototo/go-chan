@@ -20,6 +20,7 @@ class Game:
         self.blackToMove = True
         self.historyBoardString = self.boardString
         self.moves = []
+        self.passCounter = 0
     def __boardString_to_stones (self):
         stones = [[0 for column in range(self.challenge.boardSize)] for row in range(self.challenge.boardSize)]
         index = 0
@@ -51,10 +52,16 @@ class Game:
         return 0
     def make_move (self, move):
         if (self.__is_alive(move)):
-            column = ord(move[0].upper())-65
-            row = int(move[1:])
-            if (self.blackToMove): self.stones[19-row][column] = 1
-            else: self.stones[19-row][column] = 2
+            if (move != "pass"):
+                self.passCounter = 0
+                column = ord(move[0].upper())-65
+                row = int(move[1:])
+                if (self.blackToMove): self.stones[19-row][column] = 1
+                else: self.stones[19-row][column] = 2
+            else:
+                self.passCounter += 1
+                if (self.passCounter == 2):
+                    self.end_game()
             self.blackToMove = not self.blackToMove
             self.historyBoardString = self.boardString
             self.boardString = self.__stones_to_boardString()
@@ -69,11 +76,14 @@ class Game:
             self.historyBoardString = self.boardString
             self.boardString = self.__stones_to_boardString()
     def __is_alive (self, move):
-        if (self.__find_dead_stones(not self.blackToMove, move)): #suicidal moves only allowed if they capture an opponent's group
-            self.__remove_dead_stones(not self.blackToMove)
-            return True
+        if (move != "pass"):
+            if (self.__find_dead_stones(not self.blackToMove, move)): #suicidal moves only allowed if they capture an opponent's group
+                self.__remove_dead_stones(not self.blackToMove, move)
+                return True
+            else:
+                return not self.__find_dead_stones(self.blackToMove, move)
         else:
-            return not self.__find_dead_stones(self.blackToMove, move)
+            return True
     def __find_dead_stones (self, isBlack, move):
         def get_friendly_neighbours (row, column, group): #returns adjacent same color stones (4 maximum) and number of liberties
             liberties = 0
@@ -126,14 +136,16 @@ class Game:
         self.stones[19-savedStoneRow][savedStoneColumn] = savedStone
         if (dead != []): return dead
         else: return False
-    def __remove_dead_stones(self, isBlack):
         """
         Calls __find_dead_stones() and removes the returned dead stones
         """
     def draw_goban (self):
         goban = VisualBoard(self.challenge.boardSize)
         goban.generate_image(self.stones).save("goban.png")
-
+    def end_game (self):
+        """
+        Notify players that the game is over, provide them with prisoner count and wait for territory information.
+        """
 class Challenge:
     def __init__ (self, challenger, challenged, boardSize):
         self.challenger = challenger
