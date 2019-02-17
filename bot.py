@@ -48,8 +48,10 @@ async def on_message(message):
                             exists = True
                             challenges = [x for x in challenges if x != i] #remove challenge from challenges
                             if (command == commands[0]):
-                                make_game(challenge)
+                                acceptedGame = make_game(challenge)
                                 await client.send_message(message.channel, f"Challenge accepted!")
+                                acceptedGame.draw_goban()
+                                await client.send_file(message.channel, "goban.png")
                             else:
                                 await client.send_message(message.channel, f"Challenge declined!")
                 if (not exists): await client.send_message(message.channel, f"No such challenge exists!")
@@ -93,6 +95,8 @@ async def on_message(message):
                       players[playerIndex].currentGame.make_move(contents[0])
                 else:
                     await client.send_message(message.channel, f"It's not your move!")
+                players[playerIndex].currentGame.draw_goban()
+                await client.send_file(message.channel, 'goban.png')
             else: await client.send_message(message.channel, f"You're not in a game!")
             pass
 
@@ -111,6 +115,6 @@ def make_game(challenge):
     if not firstExists: players.append(Player(challenge.challenger, game))
     if not secondExists: players.append(Player(challenge.challenged, game))
     #should send blank board
-    return 0
+    return game
 
 client.run("NTQ1MzA2NDg3MTkxMjQwNzA0.D0Xv8w.e7L44QaHK6ndZigjkSTWGchrEZ8")
