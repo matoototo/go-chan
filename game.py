@@ -56,6 +56,10 @@ class Game:
     def make_move (self, move):
         if (self.__is_alive(move)):
             if (move != "pass"):
+                if (move == "resign"):
+                    if (self.blackToMove): self.end_game("white")
+                    else: self.end_game("black")
+                    return 0
                 self.passCounter = 0
                 column = ord(move[0].upper())-65
                 row = int(move[1:])
@@ -64,7 +68,8 @@ class Game:
             else:
                 self.passCounter += 1
                 if (self.passCounter == 2):
-                    self.end_game()
+                    self.end_game("pass")
+                    return 0
             self.blackToMove = not self.blackToMove
             self.historyBoardString = self.boardString
             self.boardString = self.__stones_to_boardString()
@@ -152,11 +157,16 @@ class Game:
     def draw_goban (self):
         goban = VisualBoard(self.boardSize)
         goban.generate_image(self.stones).save("goban.png")
-    def end_game (self):
+    def end_game (self, winner = False):
         """
         Notify players that the game is over, provide them with prisoner count and wait for territory information.
         """
-        self.winner = self.blackPlayer #TEMPORARY, winner has yet to be implemented!
+        if (winner in ["black", "white"]):
+            if (winner == "black"):
+                self.winner = self.blackPlayer
+            else: self.winner = self.whitePlayer
+        else:
+            self.winner = self.blackPlayer #TEMPORARY, winner by counting stones has yet to be implemented!
         self.blackPlayer.finish_game()
         self.whitePlayer.finish_game()
     def set_players(self, blackPlayer = False, whitePlayer = False):
