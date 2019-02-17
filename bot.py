@@ -114,7 +114,6 @@ def make_game(challenge):
             player.set_currentGame(game)
     if not firstExists: players.append(Player(challenge.challenger, game))
     if not secondExists: players.append(Player(challenge.challenged, game))
-    #should send blank board
     return game
 
 client.run("NTQ1MzA2NDg3MTkxMjQwNzA0.D0Xv8w.e7L44QaHK6ndZigjkSTWGchrEZ8")
