@@ -3,3 +3,5 @@ class Player:
         self.id = playerID
         self.currentGame = game
         self.previousGames = []
+    def set_currentGame (self, game):
+        self.currentGame = game
