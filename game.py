@@ -13,8 +13,8 @@ class Game:
     """
     def __init__ (self, challenge):
         self.challenge = challenge
-        self.blackPlayer = challenge.challenger
-        self.whitePlayer = challenge.challenged
+        self.blackPlayer = challenge.playerChallenger
+        self.whitePlayer = challenge.playerChallenged
         self.boardSize = challenge.boardSize
         self.boardString = str(self.boardSize**2)
         self.stones = self.__boardString_to_stones()
@@ -23,6 +23,7 @@ class Game:
         self.moves = []
         self.passCounter = 0
         self.prisoners = [0, 0] #B, W (refers to the number of points B (W) will get from prisoners, not the number of 'dead' (imprisoned) B (W) stones)
+        self.winner = False
     def __boardString_to_stones (self):
         stones = [[0 for column in range(self.boardSize)] for row in range(self.boardSize)]
         index = 0
@@ -148,7 +149,6 @@ class Game:
                 self.stones[stone[0]][stone[1]] = 0
                 if (isBlack): self.prisoners[1] += 1
                 else: self.prisoners[0] += 1
-
     def draw_goban (self):
         goban = VisualBoard(self.boardSize)
         goban.generate_image(self.stones).save("goban.png")
@@ -156,10 +156,19 @@ class Game:
         """
         Notify players that the game is over, provide them with prisoner count and wait for territory information.
         """
+        self.winner = self.blackPlayer #TEMPORARY, winner has yet to be implemented!
+        self.blackPlayer.finish_game()
+        self.whitePlayer.finish_game()
+    def set_players(self, blackPlayer = False, whitePlayer = False):
+        if (blackPlayer): self.blackPlayer = blackPlayer
+        if (whitePlayer): self.whitePlayer = whitePlayer
+
 class Challenge:
-    def __init__ (self, challenger, challenged, boardSize):
+    def __init__ (self, challenger, challenged, boardSize, playerChallenger = False, playerChallenged = False):
         self.challenger = challenger
         self.challenged = challenged
         self.boardSize = boardSize
+        self.playerChallenger = playerChallenger
+        self.playerChallenged = playerChallenged
     def __copy__ (self):
-        return Challenge(self.challenger, self.challenged, self.boardSize)
+        return Challenge(self.challenger, self.challenged, self.boardSize, self.playerChallenger, self.playerChallenger)

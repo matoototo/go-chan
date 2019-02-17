@@ -5,3 +5,6 @@ class Player:
         self.previousGames = []
     def set_currentGame (self, game):
         self.currentGame = game
+    def finish_game (self):
+        self.previousGames.append(self.currentGame)
+        self.currentGame = False
