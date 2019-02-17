@@ -15,7 +15,8 @@ class Game:
         self.challenge = challenge
         self.blackPlayer = challenge.challenger
         self.whitePlayer = challenge.challenged
-        self.boardString = str(self.challenge.boardSize**2)
+        self.boardSize = challenge.boardSize
+        self.boardString = str(self.boardSize**2)
         self.stones = self.__boardString_to_stones()
         self.blackToMove = True
         self.historyBoardString = self.boardString
@@ -23,15 +24,15 @@ class Game:
         self.passCounter = 0
         self.prisoners = [0, 0] #B, W (refers to the number of points B (W) will get from prisoners, not the number of 'dead' (imprisoned) B (W) stones)
     def __boardString_to_stones (self):
-        stones = [[0 for column in range(self.challenge.boardSize)] for row in range(self.challenge.boardSize)]
+        stones = [[0 for column in range(self.boardSize)] for row in range(self.boardSize)]
         index = 0
         for character in self.boardString.split():
             try:
                 numberOfBlanks = int(character)
                 index += numberOfBlanks
             except:
-                if   (character.upper() == "B"): stones[int(index/19)][index%19] = 1
-                elif (character.upper() == "W"): stones[int(index/19)][index%19] = 2
+                if   (character.upper() == "B"): stones[int(index/self.boardSize)][index%self.boardSize] = 1
+                elif (character.upper() == "W"): stones[int(index/self.boardSize)][index%self.boardSize] = 2
                 index += 1
         return stones
     def __stones_to_boardString (self):
@@ -57,8 +58,8 @@ class Game:
                 self.passCounter = 0
                 column = ord(move[0].upper())-65
                 row = int(move[1:])
-                if (self.blackToMove): self.stones[19-row][column] = 1
-                else: self.stones[19-row][column] = 2
+                if (self.blackToMove): self.stones[self.boardSize-row][column] = 1
+                else: self.stones[self.boardSize-row][column] = 2
             else:
                 self.passCounter += 1
                 if (self.passCounter == 2):
@@ -72,8 +73,8 @@ class Game:
     def __force_make_move (self, move):
             column = ord(move[0].upper())-65
             row = int(move[1:])
-            if (self.blackToMove): self.stones[19-row][column] = 1
-            else: self.stones[19-row][column] = 2
+            if (self.blackToMove): self.stones[self.boardSize-row][column] = 1
+            else: self.stones[self.boardSize-row][column] = 2
             self.historyBoardString = self.boardString
             self.boardString = self.__stones_to_boardString()
     def __is_alive (self, move):
@@ -92,13 +93,13 @@ class Game:
             if row > 0:
                 if self.stones[row-1][column] == color and [row-1, column] not in group: friendly.append([row-1, column])
                 elif self.stones[row-1][column] == 0: liberties += 1
-            if row < 18:
+            if row < self.boardSize-1:
                 if self.stones[row+1][column] == color and [row+1, column] not in group: friendly.append([row+1, column])
                 elif self.stones[row+1][column] == 0: liberties += 1
             if column > 0:
                 if self.stones[row][column-1] == color and [row, column-1] not in group: friendly.append([row, column-1])
                 elif self.stones[row][column-1] == 0: liberties += 1
-            if column < 18:
+            if column < self.boardSize-1:
                 if self.stones[row][column+1] == color and [row, column+1] not in group: friendly.append([row, column+1])
                 elif self.stones[row][column+1] == 0: liberties += 1
             friendly.append(liberties)
@@ -113,7 +114,7 @@ class Game:
         else: color = 2
         savedStoneColumn = ord(move[0].upper())-65
         savedStoneRow = int(move[1:])
-        savedStone = self.stones[19-savedStoneRow][savedStoneColumn]
+        savedStone = self.stones[self.boardSize-savedStoneRow][savedStoneColumn]
         self.__force_make_move(move)
         for row, array in enumerate(self.stones):
             for column, stone in enumerate(array):
@@ -134,7 +135,7 @@ class Game:
                     if not groupIsAlive and stone == color:
                         dead += group
                     checked += group
-        self.stones[19-savedStoneRow][savedStoneColumn] = savedStone
+        self.stones[self.boardSize-savedStoneRow][savedStoneColumn] = savedStone
         if (dead != []): return dead
         else: return False
     def __remove_dead_stones(self, isBlack, move):
@@ -149,7 +150,7 @@ class Game:
                 else: self.prisoners[0] += 1
 
     def draw_goban (self):
-        goban = VisualBoard(self.challenge.boardSize)
+        goban = VisualBoard(self.boardSize)
         goban.generate_image(self.stones).save("goban.png")
     def end_game (self):
         """
