@@ -23,16 +23,20 @@ class VisualBoard:
         stoneWhiteTexture -- The texture to use for white stones
         """
         
+        if (boardSize == 19): self.settings = BOARD_SETTINGS_19
+        elif (boardSize == 13):
+            self.settings = BOARD_SETTINGS_13
+            borderSize += 25
+        elif (boardSize == 9):
+            self.settings = BOARD_SETTINGS_9
+            borderSize += 50
+        
         self.width = width
         self.height = height
         self.innerWidth = width - borderSize * 2
         self.innerHeight = height - borderSize * 2
         self.borderSize = borderSize
         self.baseImage = Image.new("RGBA", (width, height), (255, 255, 255, 255))
-
-        if (boardSize == 19): self.settings = BOARD_SETTINGS_19
-        if (boardSize == 13): self.settings = BOARD_SETTINGS_13
-        if (boardSize == 9): self.settings = BOARD_SETTINGS_9
 
         (boardSize, _, _) = self.settings
         stoneWidth = int(self.innerWidth / boardSize)
@@ -70,7 +74,7 @@ class VisualBoard:
         boardSize -= 1
         stepX = self.innerWidth / boardSize
         stepY = self.innerHeight / boardSize
-        labelBoardSpacing = self.borderSize / 3
+        labelBoardSpacing = self.borderSize / 2
         draw = ImageDraw.Draw(self.baseImage)
         font = ImageFont.truetype("assets/font_fifteentwenty.otf", FONT_SIZE)
         
@@ -81,8 +85,8 @@ class VisualBoard:
             labelWidth, labelHeight = draw.textsize(label, font)
             
             draw.line([(x, self.borderSize), (x, self.innerHeight + self.borderSize)], COLOR, LINE_WIDTH)
-            draw.text((x - labelWidth / 2, self.borderSize - labelHeight - labelBoardSpacing), label, COLOR, font)
-            draw.text((x - labelWidth / 2, self.borderSize + self.innerHeight + labelBoardSpacing), label, COLOR, font)
+            draw.text((x - labelWidth / 2, self.borderSize - labelHeight - labelBoardSpacing + labelHeight / 2), label, COLOR, font)
+            draw.text((x - labelWidth / 2, self.borderSize + self.innerHeight + labelBoardSpacing - labelHeight / 2), label, COLOR, font)
         
         for i in range(0, boardSize + 1):
             y = self.borderSize + stepY * i
@@ -90,8 +94,8 @@ class VisualBoard:
             labelWidth, labelHeight = draw.textsize(label, font)
             
             draw.line([(self.borderSize, y), (self.innerWidth + self.borderSize, y)], COLOR, LINE_WIDTH)
-            draw.text((self.borderSize - labelWidth - labelBoardSpacing, y - labelHeight / 2), label, COLOR, font)
-            draw.text((self.borderSize + self.innerWidth + labelBoardSpacing, y - labelHeight / 2), label, COLOR, font)
+            draw.text((self.borderSize - labelWidth - labelBoardSpacing + labelWidth / 2, y - labelHeight / 2), label, COLOR, font)
+            draw.text((self.borderSize + self.innerWidth + labelBoardSpacing - labelWidth / 2, y - labelHeight / 2), label, COLOR, font)
         
         # Calculate star point positions
         centerX = boardSize / 2 * stepX + self.borderSize
