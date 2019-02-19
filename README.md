@@ -4,7 +4,7 @@
 * `challenge @name <9|13|19>` Challenge @name
 * `accept @name` Accept @name's challenge
 * `decline @name` Decline @name's challenge
-* `move <move> | pass` Make a move or pass
+* `move <move> | pass | resign` Make a move or pass
 * `withdraw @name` Withdraw a challenge
 * `gohelp` Print help text
 

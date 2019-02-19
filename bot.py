@@ -10,7 +10,7 @@ HELP_MESSAGE = f"""Commands:\r\n
 `challenge @name <9|13|19>` - Challenge @name\r\n
 `accept @name` - Accept @name's challenge\r\n
 `decline @name` - Decline @name's challenge\r\n
-`move <move> | pass` - Make a move or pass\r\n
+`move <move> | pass | resign` - Make a move or pass\r\n
 `withdraw @name` - Withdraw a challenge\r\n
 `gohelp` - Print this help text
 """
