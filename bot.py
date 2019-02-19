@@ -137,11 +137,13 @@ async def on_message(message):
                         await client.send_message(message.channel, f"Challenge withdrawn!")
 
             if (not exists): await client.send_message(message.channel, f"Challenge doesn't exist!")
+
 def in_game(playerID):
     for player in players:
         if (player.id == playerID):
             if (player.currentGame): return True
     return False
+
 def make_game(challenge):
     game = Game(challenge)
     games.append(game)

@@ -185,6 +185,7 @@ class Game:
         """
 
         stones = self.__find_dead_stones(isBlack, move)
+
         if stones:
             for stone in stones:
                 self.stones[stone[0]][stone[1]] = 0
@@ -214,6 +215,7 @@ class Game:
     def set_players(self, blackPlayer = False, whitePlayer = False):
         if (blackPlayer): self.blackPlayer = blackPlayer
         if (whitePlayer): self.whitePlayer = whitePlayer
+
 class Challenge:
     def __init__ (self, challenger, challenged, boardSize, playerChallenger = False, playerChallenged = False):
         self.challenger = challenger
