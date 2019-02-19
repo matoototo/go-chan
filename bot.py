@@ -170,4 +170,5 @@ def make_game(challenge):
 
 tokenFile = open("token", "r")
 token = tokenFile.read().strip()
+tokenFile.close()
 client.run(token)
