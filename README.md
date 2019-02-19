@@ -1,11 +1,12 @@
 # Go-chan
 
 ## Commands
-* `challenge @name <9|13|19>` challenge @name
-* `accept @name` accept @name's challenge
-* `decline @name` decline @name's challenge
-* `move <move> | pass` make a move or pass
-* `withdraw` withdraw from the game
+* `challenge @name <9|13|19>` Challenge @name
+* `accept @name` Accept @name's challenge
+* `decline @name` Decline @name's challenge
+* `move <move> | pass` Make a move or pass
+* `withdraw @name` Withdraw a challenge
+* `gohelp` Print help text
 
 ## Running
 ```
