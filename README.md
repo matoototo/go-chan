@@ -8,5 +8,6 @@
 
 ## Running
 ```
+echo "[your login token]" > token
 python3 bot.py
 ```

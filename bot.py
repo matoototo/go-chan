@@ -140,4 +140,6 @@ def make_game(challenge):
         game.set_players(False, players[-1])
     return game
 
-client.run("NTQ1MzA2NDg3MTkxMjQwNzA0.D0Xv8w.e7L44QaHK6ndZigjkSTWGchrEZ8")
+tokenFile = open("token", "r")
+token = tokenFile.read().strip()
+client.run(token)

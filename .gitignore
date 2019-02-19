@@ -2,3 +2,4 @@
 !assets/*.png
 *.pyc
 .vscode/
+token
