@@ -29,6 +29,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     global commands, boardSizes, challenges
+
     if ("hi bot-chan" in message.content.lower()):
         await client.send_message(message.channel, "hi!")
 
@@ -54,11 +55,13 @@ async def on_message(message):
                     await client.send_message(message.channel, f"You have to mention the person that challenged you!")
                 else:
                     exists = False
+
                     for board in boardSizes:
                         challenge = Challenge(message.raw_mentions[0], message.author.id, int(board))
                         for i in challenges:
                             if (i.challenger == challenge.challenger and i.challenged == challenge.challenged and i.boardSize == challenge.boardSize):
                                 exists = True
+
                                 if (command == commands[0]):
                                     if (not in_game(message.raw_mentions[0])):
                                         challenges = [x for x in challenges if x != i] #remove challenge from challenges
@@ -75,6 +78,7 @@ async def on_message(message):
         #challenge @user board
         elif (command == "challenge"):
             contents[1] = contents[1].split("x")[0] #try to change "_x_" to "_"
+
             if (message.author.mention == contents[0]):
                 await client.send_message(message.channel, f"You can't challenge yourself!")
             elif (len(message.raw_mentions) != 1):
@@ -85,45 +89,53 @@ async def on_message(message):
             else:
                 exists = False
                 challenge = Challenge(message.author.id, message.raw_mentions[0], int(contents[1]))
+
                 for i in challenges:
                     if (i.challenger == challenge.challenger and i.challenged == challenge.challenged):
                         exists = True
                     elif (i.challenger == challenge.challenged and i.challenged == challenge.challenger):
                         exists = True
+
                 if (exists):
                     await client.send_message(message.channel, f"Challenge between those two players already exists!")
                 else:
                     challenges.append(challenge.__copy__())
                     await client.send_message(message.channel, f"Challenge sent!")
-                
         elif (command == "move"):
             inGame = False
+
             for player in players: 
                 if (player.id == message.author.id): 
                     if (player.currentGame != False): 
                         inGame = True
                         playerIndex = players.index(player)
                     break
+
             if inGame:
-                if   (players[playerIndex].currentGame.blackPlayer.id == message.author.id and players[playerIndex].currentGame.blackToMove):
-                      players[playerIndex].currentGame.make_move(contents[0])
-                elif (players[playerIndex].currentGame.whitePlayer.id == message.author.id and not players[playerIndex].currentGame.blackToMove):
-                      players[playerIndex].currentGame.make_move(contents[0])
+                currentGame = players[playerIndex].currentGame
+
+                if   (currentGame.blackPlayer.id == message.author.id and currentGame.blackToMove):
+                      currentGame.make_move(contents[0])
+                elif (currentGame.whitePlayer.id == message.author.id and not currentGame.blackToMove):
+                      currentGame.make_move(contents[0])
                 else:
                     await client.send_message(message.channel, f"It's not your move!")
-                players[playerIndex].currentGame.draw_goban()
+
+                currentGame.draw_goban()
                 await client.send_file(message.channel, 'goban.png')
             else: await client.send_message(message.channel, f"You're not in a game!")
-            pass
         elif (command == "withdraw"):
             exists = False
+
             for board in boardSizes:
                 challenge = Challenge(message.author.id, message.raw_mentions[0], int(board))
+
                 for i in challenges:
                     if (i.challenger == challenge.challenger and i.challenged == challenge.challenged and i.boardSize == challenge.boardSize):
                         exists = True
                         challenges = [x for x in challenges if x != i] #remove challenge from challenges
                         await client.send_message(message.channel, f"Challenge withdrawn!")
+
             if (not exists): await client.send_message(message.channel, f"Challenge doesn't exist!")
 def in_game(playerID):
     for player in players:
@@ -135,6 +147,7 @@ def make_game(challenge):
     games.append(game)
     firstExists = False
     secondExists = False
+
     for player in players:
         if (player.id == challenge.challenger):
             firstExists = True
@@ -144,6 +157,7 @@ def make_game(challenge):
             secondExists = True
             player.set_currentGame(game)
             game.set_players(False, player)
+
     if not firstExists:
         players.append(Player(challenge.challenger, game))
         game.set_players(players[-1], False)
