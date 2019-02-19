@@ -6,8 +6,17 @@ import discord
 from game import Game, Challenge
 from player import Player
 
+HELP_MESSAGE = f"""Commands:\r\n
+`challenge @name <9|13|19>` - Challenge @name\r\n
+`accept @name` - Accept @name's challenge\r\n
+`decline @name` - Decline @name's challenge\r\n
+`move <move> | pass` - Make a move or pass\r\n
+`withdraw @name` - Withdraw a challenge\r\n
+`gohelp` - Print this help text
+"""
+
 client = discord.Client()
-commands = ["accept", "challenge", "decline", "move", "withdraw"]
+commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp"]
 boardSizes = ["19", "13", "9"]
 challenges = []
 games = []
@@ -32,6 +41,9 @@ async def on_message(message):
             if  ((len(contents) == 2 and command != commands[1]) or (len(contents) == 1 and command == commands[1])):
                 await client.send_message(message.channel, f"Ummm, no habla wrong command!")
                 return 0
+        elif (command == "gohelp"):
+            await client.send_message(message.channel, HELP_MESSAGE)
+            return 0
         else:
             await client.send_message(message.channel, f"Ummm, no habla wrong command!")
             return 0
@@ -61,7 +73,7 @@ async def on_message(message):
                     if (not exists): await client.send_message(message.channel, f"No such challenge exists!")
             else: await client.send_message(message.channel, f"You're already in a game, you can't respond to challenges at this moment!")
         #challenge @user board
-        if (command == "challenge"):
+        elif (command == "challenge"):
             contents[1] = contents[1].split("x")[0] #try to change "_x_" to "_"
             if (message.author.mention == contents[0]):
                 await client.send_message(message.channel, f"You can't challenge yourself!")
@@ -84,7 +96,7 @@ async def on_message(message):
                     challenges.append(challenge.__copy__())
                     await client.send_message(message.channel, f"Challenge sent!")
                 
-        if (command == "move"):
+        elif (command == "move"):
             inGame = False
             for player in players: 
                 if (player.id == message.author.id): 
@@ -103,7 +115,7 @@ async def on_message(message):
                 await client.send_file(message.channel, 'goban.png')
             else: await client.send_message(message.channel, f"You're not in a game!")
             pass
-        if (command == "withdraw"):
+        elif (command == "withdraw"):
             exists = False
             for board in boardSizes:
                 challenge = Challenge(message.author.id, message.raw_mentions[0], int(board))
