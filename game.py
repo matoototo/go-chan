@@ -142,7 +142,7 @@ class Game:
         if (isBlack): color = 1
         else: color = 2
 
-        savedStoneColumn = ord(move[0].upper())-65
+        savedStoneColumn = ord(move[0].upper()) - 65
         savedStoneRow = int(move[1:])
         savedStone = self.stones[self.boardSize-savedStoneRow][savedStoneColumn]
         self.__force_make_move(move)
@@ -161,7 +161,7 @@ class Game:
                         if (neighbours[-1]) != 0: groupIsAlive = True
 
                         while (queue != []):
-                            _row, _column = queue.pop(0) 
+                            _row, _column = queue.pop(0)
                             _neighbours = get_friendly_neighbours(_row, _column, group)
                             queue += _neighbours[:-1]
 
@@ -174,7 +174,7 @@ class Game:
 
                     checked += group
 
-        self.stones[self.boardSize-savedStoneRow][savedStoneColumn] = savedStone
+        self.stones[self.boardSize - savedStoneRow][savedStoneColumn] = savedStone
 
         if (dead != []): return dead
         else: return False

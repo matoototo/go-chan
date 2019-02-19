@@ -104,9 +104,9 @@ async def on_message(message):
         elif (command == "move"):
             inGame = False
 
-            for player in players: 
-                if (player.id == message.author.id): 
-                    if (player.currentGame != False): 
+            for player in players:
+                if (player.id == message.author.id):
+                    if (player.currentGame != False):
                         inGame = True
                         playerIndex = players.index(player)
                     break
