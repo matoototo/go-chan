@@ -40,8 +40,8 @@ class VisualBoard:
         self.baseImage = Image.new("RGBA", (width, height), (255, 255, 255, 255))
 
         (boardSize, _, _) = self.settings
-        stoneWidth = int(self.innerWidth / (boardSize-1))
-        stoneHeight = int(self.innerWidth / (boardSize-1))
+        stoneWidth = int(self.innerWidth / (boardSize - 1))
+        stoneHeight = int(self.innerWidth / (boardSize - 1))
 
         self.stoneBlackTexture = stoneBlackTexture.resize((stoneWidth, stoneHeight), Image.BICUBIC)
         self.stoneWhiteTexture = stoneWhiteTexture.resize((stoneWidth, stoneHeight), Image.BICUBIC)
