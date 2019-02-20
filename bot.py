@@ -121,7 +121,10 @@ async def on_message(message):
                 else:
                     await client.send_message(message.channel, f"It's not your move!")
                 if (currentGame.winner):
-                    await client.send_message(message.channel, f"{currentGame.winner} won by {abs(currentGame.blackScore-currentGame.whiteScore)} points!")
+                    if (currentGame.blackScore-currentGame.whiteScore != 0):
+                        await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by {abs(currentGame.blackScore-currentGame.whiteScore)} points!")
+                    else: 
+                        await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by resignation!")
                 currentGame.draw_goban()
                 await client.send_file(message.channel, 'goban.png')
             else: await client.send_message(message.channel, f"You're not in a game!")
