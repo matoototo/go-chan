@@ -210,13 +210,12 @@ class Game:
             else: self.winner = self.whitePlayer
         else:
             [blackTerritory, whiteTerritory] = count_territory(self.stones)
-
-            if blackTerritory > whiteTerritory:
+            blackScore = blackTerritory+self.prisoners[0]
+            whiteScore = whiteTerritory+self.prisoners[1]+6.5 #6.5 = komi
+            if blackScore > whiteScore:
                 self.winner = self.blackPlayer
-            elif whiteTerritory > blackTerritory:
-                self.winner = self.whitePlayer
             else:
-                pass #FIXME: What should happen in this case?
+                self.winner = self.whitePlayer
 
         self.blackPlayer.finish_game()
         self.whitePlayer.finish_game()
