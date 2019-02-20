@@ -6,14 +6,13 @@ import discord
 from game import Game, Challenge
 from player import Player
 
-HELP_MESSAGE = f"""Commands:\r\n
-`challenge @name <9|13|19>` - Challenge @name\r\n
-`accept @name` - Accept @name's challenge\r\n
-`decline @name` - Decline @name's challenge\r\n
-`move <move> | pass | resign` - Make a move or pass\r\n
-`withdraw @name` - Withdraw a challenge\r\n
-`gohelp` - Print this help text
-"""
+HELP_MESSAGE = discord.Embed(title = "Commands", colour = 0x55cc55, description = "No prefix needed")
+HELP_MESSAGE.add_field(name = "`challenge @name <9|13|19>`", value = "Challenge @name", inline = False)
+HELP_MESSAGE.add_field(name = "`accept @name`", value = "Accept @name's challenge", inline = False)
+HELP_MESSAGE.add_field(name = "`decline @name`", value = "Decline @name's challenge", inline = False)
+HELP_MESSAGE.add_field(name = "`move <move> | pass | resign`", value = "Make a move or pass", inline = False)
+HELP_MESSAGE.add_field(name = "`withdraw @name`", value = "Withdraw a challenge", inline = False)
+HELP_MESSAGE.add_field(name = "`gohelp`", value = "Print this help text", inline = False)
 
 client = discord.Client()
 commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp"]
@@ -43,7 +42,7 @@ async def on_message(message):
                 await client.send_message(message.channel, f"Ummm, no habla wrong command!")
                 return 0
         elif (command == "gohelp"):
-            await client.send_message(message.channel, HELP_MESSAGE)
+            await client.send_message(message.channel, embed = HELP_MESSAGE)
             return 0
         else:
             await client.send_message(message.channel, f"Ummm, no habla wrong command!")
