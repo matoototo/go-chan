@@ -162,7 +162,7 @@ class VisualBoard:
                     imageWidth, imageHeight = image.size
                     newImage.paste(image, (int(posX - imageWidth / 2), int(posY - imageHeight / 2)), image)
 
-                if territoryMarker:
+                if territoryMarker and not image:
                     markerWidth, markerHeight = territoryMarker.size
                     newImage.paste(territoryMarker, (int(posX - markerWidth / 2), int(posY - markerHeight / 2)), territoryMarker)
 
