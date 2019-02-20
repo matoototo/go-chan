@@ -1,3 +1,5 @@
+import copy
+
 class Graph:
     """A simple undirected graph."""
 
@@ -63,16 +65,24 @@ def count_territory(stones):
         if node.value == 0:
             __flood(node)
 
-    territoryBlack = 0
-    territoryWhite = 0
+    territoryCountBlack = 0
+    territoryCountWhite = 0
+    territory = copy.deepcopy(stones)
 
     for node in graph.nodes:
         if node.value == 1:
-            territoryBlack += 1
+            territoryCountBlack += 1
         elif node.value == 2:
-            territoryWhite += 1
+            territoryCountWhite += 1
 
-    return [territoryBlack, territoryWhite]
+    index = 0
+
+    for y, row in enumerate(territory):
+        for x, _ in enumerate(row):
+            territory[y][x] = graph.nodes[index].value
+            index += 1
+
+    return [territoryCountBlack, territoryCountWhite, territory]
 
 def __flood(start):
     """Performs a simple depth-first search for all adjacent nodes without stones, starting from the given node.
@@ -108,6 +118,7 @@ def __flood(start):
         elif white and not black:
             node.value = 2
 
+#from draw import VisualBoard
 #stones = [
 #    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 #    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -129,5 +140,6 @@ def __flood(start):
 #    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2],
 #    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0]
 #]
-#[blackTerritory, whiteTerritory] = count_territory(stones)
-#print("Black: %d, white: %d" % (blackTerritory, whiteTerritory))
+#[territoryCountBlack, territoryCountWhite, territory] = count_territory(stones)
+#print("Black: %d, white: %d" % (territoryCountBlack, territoryCountWhite))
+#VisualBoard(19).generate_image(stones, territory).save("test.png")

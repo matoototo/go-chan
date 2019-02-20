@@ -3,6 +3,8 @@ from PIL import Image, ImageDraw, ImageFont
 BOARD_TEXTURE = Image.open("assets/board.png")
 STONE_BLACK_TEXTURE = Image.open("assets/stone_black.png")
 STONE_WHITE_TEXTURE = Image.open("assets/stone_white.png")
+MARKER_BLACK_TEXTURE = Image.open("assets/marker_black.png")
+MARKER_WHITE_TEXTURE = Image.open("assets/marker_white.png")
 
 BOARD_SETTINGS_9 = (9, False, 2)
 BOARD_SETTINGS_13 = (13, False, 3)
@@ -11,7 +13,7 @@ BOARD_SETTINGS_19 = (19, True, 3)
 class VisualBoard:
     """Contains data for the visual representation of a Go board."""
 
-    def __init__(self, boardSize, width = 750, height = 750, borderSize = 75, boardTexture = BOARD_TEXTURE, stoneBlackTexture = STONE_BLACK_TEXTURE, stoneWhiteTexture = STONE_WHITE_TEXTURE):
+    def __init__(self, boardSize, width = 750, height = 750, borderSize = 75, boardTexture = BOARD_TEXTURE, stoneBlackTexture = STONE_BLACK_TEXTURE, stoneWhiteTexture = STONE_WHITE_TEXTURE, markerBlackTexture = MARKER_BLACK_TEXTURE, markerWhiteTexture = MARKER_WHITE_TEXTURE):
         """Instantiates a new board from the given data.
 
         Arguments:
@@ -22,6 +24,8 @@ class VisualBoard:
         boardTexture -- The base texture to use for the board
         stoneBlackTexture -- The texture to use for black stones
         stoneWhiteTexture -- The texture to use for white stones
+        markerBlackTexture -- The texture to use for black territory markers
+        markerWhiteTexture -- The texture to use for white territory markers
         """
 
         if (boardSize == 19): self.settings = BOARD_SETTINGS_19
@@ -42,9 +46,13 @@ class VisualBoard:
         (boardSize, _, _) = self.settings
         stoneWidth = int(self.innerWidth / (boardSize - 1))
         stoneHeight = int(self.innerWidth / (boardSize - 1))
+        markerWidth = int(stoneWidth / 2)
+        markerHeight = int(stoneHeight / 2)
 
         self.stoneBlackTexture = stoneBlackTexture.resize((stoneWidth, stoneHeight), Image.BICUBIC)
         self.stoneWhiteTexture = stoneWhiteTexture.resize((stoneWidth, stoneHeight), Image.BICUBIC)
+        self.markerBlackTexture = markerBlackTexture.resize((markerWidth, markerHeight), Image.BICUBIC)
+        self.markerWhiteTexture = markerWhiteTexture.resize((markerWidth, markerHeight), Image.BICUBIC)
 
         self.__draw_board_texture(boardTexture)
         self.__draw_board()
@@ -119,7 +127,7 @@ class VisualBoard:
             draw.ellipse([(centerX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], COLOR)
             draw.ellipse([(rightX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], COLOR)
 
-    def generate_image(self, stones):
+    def generate_image(self, stones, territory = False):
         """Generates a visual representation of a Go game.
         The dimensions of the passed array have to match the board size.
 
@@ -138,17 +146,25 @@ class VisualBoard:
                 posX = int(self.borderSize + x * stepX)
                 posY = int(self.borderSize + y * stepY)
                 image = None
+                territoryMarker = None
 
                 if stone == 1:
                     image = self.stoneBlackTexture
                 elif stone == 2:
                     image = self.stoneWhiteTexture
-                else:
-                    image = Image.new("RGBA", (1, 1))
 
-                imageWidth, imageHeight = image.size
+                if territory and territory[y][x] == 1:
+                    territoryMarker = self.markerBlackTexture
+                elif territory and territory[y][x] == 2:
+                    territoryMarker = self.markerWhiteTexture
 
-                newImage.paste(image, (int(posX - imageWidth / 2), int(posY - imageHeight / 2)), image)
+                if image:
+                    imageWidth, imageHeight = image.size
+                    newImage.paste(image, (int(posX - imageWidth / 2), int(posY - imageHeight / 2)), image)
+
+                if territoryMarker:
+                    markerWidth, markerHeight = territoryMarker.size
+                    newImage.paste(territoryMarker, (int(posX - markerWidth / 2), int(posY - markerHeight / 2)), territoryMarker)
 
         return newImage
 
@@ -174,4 +190,25 @@ class VisualBoard:
 #    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 #    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 #]
-#board.generate_image(stones).save("test.png")
+#markers = [
+#    [1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+#]
+#board.generate_image(stones, markers).save("test.png")

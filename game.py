@@ -201,7 +201,13 @@ class Game:
 
     def draw_goban(self):
         goban = VisualBoard(self.boardSize)
-        image = goban.generate_image(self.stones)
+        image = None
+
+        if self.territory:
+            image = goban.generate_image(self.stones, self.territory)
+        else:
+            image = goban.generate_image(self.stones)
+
         arrayBuffer = BytesIO()
         image.save(arrayBuffer, "PNG")
         arrayBuffer.seek(0)
@@ -218,9 +224,11 @@ class Game:
                 self.winner = self.blackPlayer
             else: self.winner = self.whitePlayer
         else:
-            [blackTerritory, whiteTerritory] = count_territory(self.stones)
-            self.blackScore = blackTerritory + self.prisoners[0]
-            self.whiteScore = whiteTerritory + self.prisoners[1] + 6.5 #6.5 = komi
+            [territoryCountBlack, territoryCountWhite, territory] = count_territory(self.stones)
+            self.blackScore = territoryCountBlack + self.prisoners[0]
+            self.whiteScore = territoryCountWhite + self.prisoners[1] + 6.5 #6.5 = komi
+            self.territory = territory
+
             if self.blackScore > self.whiteScore:
                 self.winner = self.blackPlayer
             else:
