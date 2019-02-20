@@ -27,10 +27,10 @@ class VisualBoard:
         if (boardSize == 19): self.settings = BOARD_SETTINGS_19
         elif (boardSize == 13):
             self.settings = BOARD_SETTINGS_13
-            borderSize += 25
+            borderSize += 10
         elif (boardSize == 9):
             self.settings = BOARD_SETTINGS_9
-            borderSize += 50
+            borderSize += 25
 
         self.width = width
         self.height = height
