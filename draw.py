@@ -10,6 +10,8 @@ BOARD_SETTINGS_9 = (9, False, 2)
 BOARD_SETTINGS_13 = (13, False, 3)
 BOARD_SETTINGS_19 = (19, True, 3)
 
+BOARD_COLUMN_LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"]
+
 class VisualBoard:
     """Contains data for the visual representation of a Go board."""
 
@@ -90,7 +92,7 @@ class VisualBoard:
         # Draw lines and labels
         for i in range(0, boardSize + 1):
             x = self.borderSize + stepX * i
-            label = chr(ord('A') + i)
+            label = BOARD_COLUMN_LABELS[i]
             labelWidth, labelHeight = draw.textsize(label, font)
 
             draw.line([(x, self.borderSize), (x, self.innerHeight + self.borderSize)], COLOR, LINE_WIDTH)
