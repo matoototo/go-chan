@@ -75,7 +75,7 @@ def count_territory(stones):
     return [territoryBlack, territoryWhite]
 
 def __flood(start):
-    """Performs a simple depth-first search for all adjacent node without stones starting from the given node.
+    """Performs a simple depth-first search for all adjacent nodes without stones, starting from the given node.
     If we hit a black stone, mark everything as black territory.
     If we hit a white stone, mark everything as white territory.
     If we hit both, it's neither.
