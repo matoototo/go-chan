@@ -2,8 +2,6 @@ from io import BytesIO
 from draw import VisualBoard
 from array_search import count_territory
 
-BOARD_COLUMN_INDICES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
-
 class Game:
     """
     boardString = FEN-like presentation of the board:
@@ -77,7 +75,7 @@ class Game:
                     return 0
 
                 self.passCounter = 0
-                column = BOARD_COLUMN_INDICES[ord(move[0].upper()) - 65]
+                column = ord(move[0].upper()) - 65
                 row = int(move[1:])
                 if (self.stones[self.boardSize - row][column] != 0): return -1
                 if (self.blackToMove): self.stones[self.boardSize - row][column] = 1
@@ -98,7 +96,7 @@ class Game:
         else: return -1
 
     def __force_make_move(self, move):
-            column = BOARD_COLUMN_INDICES[ord(move[0].upper()) - 65]
+            column = ord(move[0].upper()) - 65
             row = int(move[1:])
 
             if (self.blackToMove): self.stones[self.boardSize - row][column] = 1
