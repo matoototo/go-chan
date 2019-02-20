@@ -1,3 +1,4 @@
+from io import BytesIO
 from draw import VisualBoard
 from array_search import count_territory
 
@@ -200,7 +201,12 @@ class Game:
 
     def draw_goban(self):
         goban = VisualBoard(self.boardSize)
-        goban.generate_image(self.stones).save("goban.png")
+        image = goban.generate_image(self.stones)
+        arrayBuffer = BytesIO()
+        image.save(arrayBuffer, "PNG")
+        arrayBuffer.seek(0)
+
+        return arrayBuffer
 
     def end_game(self, winner = False):
         """

@@ -67,8 +67,8 @@ async def on_message(message):
                                         challenges = [x for x in challenges if x != i] #remove challenge from challenges
                                         acceptedGame = make_game(challenge)
                                         await client.send_message(message.channel, f"Challenge accepted!")
-                                        acceptedGame.draw_goban()
-                                        await client.send_file(message.channel, "goban.png")
+                                        imageData = acceptedGame.draw_goban()
+                                        await client.send_file(message.channel, fp = imageData, filename = "goban.png")
                                     else: await client.send_message(message.channel, f"They're already in a game, try again later!")
                                 else:
                                     challenges = [x for x in challenges if x != i] #remove challenge from challenges
@@ -127,8 +127,9 @@ async def on_message(message):
                         await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by {abs(currentGame.blackScore-currentGame.whiteScore)} points!")
                     else: 
                         await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by resignation!")
-                currentGame.draw_goban()
-                await client.send_file(message.channel, 'goban.png')
+
+                imageData = currentGame.draw_goban()
+                await client.send_file(message.channel, fp = imageData, filename = "goban.png")
             else: await client.send_message(message.channel, f"You're not in a game!")
         elif (command == "withdraw"):
             exists = False
