@@ -76,9 +76,9 @@ class Game:
                 self.passCounter = 0
                 column = ord(move[0].upper()) - 65
                 row = int(move[1:])
-                if (self.stones[self.boardSize-row][column] != 0): return -1
-                if (self.blackToMove): self.stones[self.boardSize-row][column] = 1
-                else: self.stones[self.boardSize-row][column] = 2
+                if (self.stones[self.boardSize - row][column] != 0): return -1
+                if (self.blackToMove): self.stones[self.boardSize - row][column] = 1
+                else: self.stones[self.boardSize - row][column] = 2
             else:
                 self.passCounter += 1
 
@@ -98,7 +98,7 @@ class Game:
             column = ord(move[0].upper()) - 65
             row = int(move[1:])
 
-            if (self.blackToMove): self.stones[self.boardSize-row][column] = 1
+            if (self.blackToMove): self.stones[self.boardSize - row][column] = 1
             else: self.stones[self.boardSize - row][column] = 2
 
             self.historyBoardString = self.boardString
@@ -130,7 +130,7 @@ class Game:
                 elif self.stones[row - 1][column] == 0: liberties += 1
             if row < self.boardSize - 1:
                 if self.stones[row + 1][column] == color and [row + 1, column] not in group: friendly.append([row + 1, column])
-                elif self.stones[row+1][column] == 0: liberties += 1
+                elif self.stones[row + 1][column] == 0: liberties += 1
             if column > 0:
                 if self.stones[row][column - 1] == color and [row, column - 1] not in group: friendly.append([row, column - 1])
                 elif self.stones[row][column - 1] == 0: liberties += 1
@@ -213,8 +213,8 @@ class Game:
             else: self.winner = self.whitePlayer
         else:
             [blackTerritory, whiteTerritory] = count_territory(self.stones)
-            self.blackScore = blackTerritory+self.prisoners[0]
-            self.whiteScore = whiteTerritory+self.prisoners[1]+6.5 #6.5 = komi
+            self.blackScore = blackTerritory + self.prisoners[0]
+            self.whiteScore = whiteTerritory + self.prisoners[1] + 6.5 #6.5 = komi
             if self.blackScore > self.whiteScore:
                 self.winner = self.blackPlayer
             else:
