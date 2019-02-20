@@ -27,6 +27,8 @@ class Game:
         self.passCounter = 0
         self.prisoners = [0, 0] #B, W (refers to the number of points B (W) will get from prisoners, not the number of 'dead' (imprisoned) B (W) stones)
         self.winner = False
+        self.blackScore = 0
+        self.whiteScore = 0
 
     def __boardString_to_stones(self):
         stones = [[0 for column in range(self.boardSize)] for row in range(self.boardSize)]
@@ -210,9 +212,9 @@ class Game:
             else: self.winner = self.whitePlayer
         else:
             [blackTerritory, whiteTerritory] = count_territory(self.stones)
-            blackScore = blackTerritory+self.prisoners[0]
-            whiteScore = whiteTerritory+self.prisoners[1]+6.5 #6.5 = komi
-            if blackScore > whiteScore:
+            self.blackScore = blackTerritory+self.prisoners[0]
+            self.whiteScore = whiteTerritory+self.prisoners[1]+6.5 #6.5 = komi
+            if self.blackScore > self.whiteScore:
                 self.winner = self.blackPlayer
             else:
                 self.winner = self.whitePlayer
