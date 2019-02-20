@@ -155,16 +155,16 @@ class VisualBoard:
                 elif stone == 2:
                     image = self.stoneWhiteTexture
 
-                if territory and territory[y][x] == 1:
+                if territory and territory[y][x] == 4:
                     territoryMarker = self.markerBlackTexture
-                elif territory and territory[y][x] == 2:
+                elif territory and territory[y][x] == 5:
                     territoryMarker = self.markerWhiteTexture
 
                 if image:
                     imageWidth, imageHeight = image.size
                     newImage.paste(image, (int(posX - imageWidth / 2), int(posY - imageHeight / 2)), image)
 
-                if territoryMarker and not image:
+                if territoryMarker:
                     markerWidth, markerHeight = territoryMarker.size
                     newImage.paste(territoryMarker, (int(posX - markerWidth / 2), int(posY - markerHeight / 2)), territoryMarker)
 

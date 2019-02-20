@@ -1,5 +1,12 @@
 import copy
 
+UNASSIGNED = 0
+BLACK = 1
+WHITE = 2
+VISITED = 3
+TERRITORY_BLACK = 4
+TERRITORY_WHITE = 5
+
 class Graph:
     """A simple undirected graph."""
 
@@ -58,11 +65,11 @@ def count_territory(stones):
 
     # We introduce the new value 3 which means the node has been visited but is not part of a player's territory
     for node in graph.nodes:
-        if node.value == 3:
+        if node.value == VISITED:
             continue
 
         # Node has not yet been visited
-        if node.value == 0:
+        if node.value == UNASSIGNED:
             __flood(node)
 
     territoryCountBlack = 0
@@ -70,9 +77,9 @@ def count_territory(stones):
     territory = copy.deepcopy(stones)
 
     for node in graph.nodes:
-        if node.value == 1:
+        if node.value == TERRITORY_BLACK:
             territoryCountBlack += 1
-        elif node.value == 2:
+        elif node.value == TERRITORY_WHITE:
             territoryCountWhite += 1
 
     index = 0
@@ -101,22 +108,23 @@ def __flood(start):
 
     while stack:
         node = stack.pop()
-        node.value = 3
+        node.value = VISITED
         visited.append(node)
 
         for neighbour in node.neighbours:
-            if neighbour.value == 0:
+            if neighbour.value == UNASSIGNED:
                 stack.append(neighbour)
-            elif neighbour.value == 1:
+            elif neighbour.value == BLACK:
                 black = True
-            elif neighbour.value == 2:
+            elif neighbour.value == WHITE:
                 white = True
 
+    # To separate territory from the stones we change black from 1 to 4 and white from 2 to 5
     for node in visited:
         if black and not white:
-            node.value = 1
+            node.value = TERRITORY_BLACK
         elif white and not black:
-            node.value = 2
+            node.value = TERRITORY_WHITE
 
 #from draw import VisualBoard
 #stones = [
