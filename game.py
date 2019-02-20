@@ -1,4 +1,5 @@
 from draw import VisualBoard
+from array_search import count_territory
 
 class Game:
     """
@@ -208,7 +209,14 @@ class Game:
                 self.winner = self.blackPlayer
             else: self.winner = self.whitePlayer
         else:
-            self.winner = self.blackPlayer #TEMPORARY, winner by counting stones has yet to be implemented!
+            [blackTerritory, whiteTerritory] = count_territory(self.stones)
+
+            if blackTerritory > whiteTerritory:
+                self.winner = self.blackPlayer
+            elif whiteTerritory > blackTerritory:
+                self.winner = self.whitePlayer
+            else:
+                pass #FIXME: What should happen in this case?
 
         self.blackPlayer.finish_game()
         self.whitePlayer.finish_game()
