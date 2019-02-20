@@ -201,7 +201,7 @@ class Game:
 
     def end_game(self, winner = False):
         """
-        Notify players that the game is over, provide them with prisoner count and wait for territory information.
+        Count territory if needed and determine the winner.
         """
 
         if (winner in ["black", "white"]):
