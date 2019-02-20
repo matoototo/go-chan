@@ -106,6 +106,7 @@ class Game:
 
     def __is_alive(self, move):
         if (move != "pass"):
+            if (move == "resign"): return True
             if (self.__find_dead_stones(not self.blackToMove, move)): #suicidal moves only allowed if they capture an opponent's group
                 self.__remove_dead_stones(not self.blackToMove, move)
                 return True
