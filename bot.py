@@ -12,10 +12,11 @@ HELP_MESSAGE.add_field(name = "`accept @name`", value = "Accept @name's challeng
 HELP_MESSAGE.add_field(name = "`decline @name`", value = "Decline @name's challenge", inline = False)
 HELP_MESSAGE.add_field(name = "`move <move> | pass | resign`", value = "Make a move or pass", inline = False)
 HELP_MESSAGE.add_field(name = "`withdraw @name`", value = "Withdraw a challenge", inline = False)
+HELP_MESSAGE.add_field(name = "`gorules`", value = "Print the Go rules", inline = False)
 HELP_MESSAGE.add_field(name = "`gohelp`", value = "Print this help text", inline = False)
 
 client = discord.Client()
-commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp"]
+commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp", "gorules"]
 boardSizes = ["19", "13", "9"]
 challenges = []
 games = []
@@ -41,8 +42,12 @@ async def on_message(message):
             if  ((len(contents) == 2 and command != commands[1]) or (len(contents) == 1 and command == commands[1])):
                 await client.send_message(message.channel, f"Ummm, no habla wrong command!")
                 return 0
-        elif (command == "gohelp"):
+        elif command == "gohelp":
             await client.send_message(message.channel, embed = HELP_MESSAGE)
+            return 0
+        elif command == "gorules":
+            await client.send_file(message.channel, "assets/rules_1.png")
+            await client.send_file(message.channel, "assets/rules_2.png")
             return 0
         else:
             await client.send_message(message.channel, f"Ummm, no habla wrong command!")
