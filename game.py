@@ -1,4 +1,5 @@
 from draw import VisualBoard
+
 class Game:
     """
     boardString = FEN-like presentation of the board:
@@ -12,7 +13,7 @@ class Game:
             - 19x19 with a black stone on D16: "60 B 300"
     """
 
-    def __init__ (self, challenge):
+    def __init__(self, challenge):
         self.challenge = challenge
         self.blackPlayer = challenge.playerChallenger
         self.whitePlayer = challenge.playerChallenged
@@ -26,7 +27,7 @@ class Game:
         self.prisoners = [0, 0] #B, W (refers to the number of points B (W) will get from prisoners, not the number of 'dead' (imprisoned) B (W) stones)
         self.winner = False
 
-    def __boardString_to_stones (self):
+    def __boardString_to_stones(self):
         stones = [[0 for column in range(self.boardSize)] for row in range(self.boardSize)]
         index = 0
 
@@ -40,7 +41,7 @@ class Game:
                 index += 1
         return stones
 
-    def __stones_to_boardString (self):
+    def __stones_to_boardString(self):
         boardString = ""
         blanks = 0
 
@@ -56,12 +57,12 @@ class Game:
         if (blanks != 0): boardString += f" {str(blanks)}"
         return boardString[1:]
 
-    def set_boardString (self, newBoardString):
+    def set_boardString(self, newBoardString):
         self.boardString = newBoardString
         self.stones = self.__boardString_to_stones()
         return 0
 
-    def make_move (self, move):
+    def make_move(self, move):
         if (self.__is_alive(move)):
             if (move != "pass"):
                 if (move == "resign"):
@@ -90,7 +91,7 @@ class Game:
             return 0
         else: return -1
 
-    def __force_make_move (self, move):
+    def __force_make_move(self, move):
             column = ord(move[0].upper()) - 65
             row = int(move[1:])
 
@@ -100,7 +101,7 @@ class Game:
             self.historyBoardString = self.boardString
             self.boardString = self.__stones_to_boardString()
 
-    def __is_alive (self, move):
+    def __is_alive(self, move):
         if (move != "pass"):
             if (self.__find_dead_stones(not self.blackToMove, move)): #suicidal moves only allowed if they capture an opponent's group
                 self.__remove_dead_stones(not self.blackToMove, move)
@@ -110,13 +111,13 @@ class Game:
         else:
             return True
 
-    def __find_dead_stones (self, isBlack, move):
+    def __find_dead_stones(self, isBlack, move):
         """
         Tries move, loops through stones[][] and finds groups with no liberties of a particular color
         If found, returns an array with dead stone indices, else return False
         """
 
-        def get_friendly_neighbours (row, column, group): #returns adjacent same color stones (4 maximum) and number of liberties
+        def get_friendly_neighbours(row, column, group): #returns adjacent same color stones (4 maximum) and number of liberties
             liberties = 0
             friendly = []
 
@@ -144,7 +145,7 @@ class Game:
 
         savedStoneColumn = ord(move[0].upper()) - 65
         savedStoneRow = int(move[1:])
-        savedStone = self.stones[self.boardSize-savedStoneRow][savedStoneColumn]
+        savedStone = self.stones[self.boardSize - savedStoneRow][savedStoneColumn]
         self.__force_make_move(move)
 
         for row, array in enumerate(self.stones):
@@ -193,11 +194,11 @@ class Game:
                 if (isBlack): self.prisoners[1] += 1
                 else: self.prisoners[0] += 1
 
-    def draw_goban (self):
+    def draw_goban(self):
         goban = VisualBoard(self.boardSize)
         goban.generate_image(self.stones).save("goban.png")
 
-    def end_game (self, winner = False):
+    def end_game(self, winner = False):
         """
         Notify players that the game is over, provide them with prisoner count and wait for territory information.
         """
@@ -217,12 +218,12 @@ class Game:
         if (whitePlayer): self.whitePlayer = whitePlayer
 
 class Challenge:
-    def __init__ (self, challenger, challenged, boardSize, playerChallenger = False, playerChallenged = False):
+    def __init__(self, challenger, challenged, boardSize, playerChallenger = False, playerChallenged = False):
         self.challenger = challenger
         self.challenged = challenged
         self.boardSize = boardSize
         self.playerChallenger = playerChallenger
         self.playerChallenged = playerChallenged
 
-    def __copy__ (self):
+    def __copy__(self):
         return Challenge(self.challenger, self.challenged, self.boardSize, self.playerChallenger, self.playerChallenger)

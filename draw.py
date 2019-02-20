@@ -13,6 +13,7 @@ class VisualBoard:
 
     def __init__(self, boardSize, width = 750, height = 750, borderSize = 75, boardTexture = BOARD_TEXTURE, stoneBlackTexture = STONE_BLACK_TEXTURE, stoneWhiteTexture = STONE_WHITE_TEXTURE):
         """Instantiates a new board from the given data.
+
         Arguments:
         width -- The board width
         height -- The board height
