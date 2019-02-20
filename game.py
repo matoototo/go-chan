@@ -30,7 +30,7 @@ class Game:
         self.winner = False
         self.blackScore = 0
         self.whiteScore = 0
-
+        self.territory = []
     def __boardString_to_stones(self):
         stones = [[0 for column in range(self.boardSize)] for row in range(self.boardSize)]
         index = 0
