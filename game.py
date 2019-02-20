@@ -76,7 +76,7 @@ class Game:
                 self.passCounter = 0
                 column = ord(move[0].upper()) - 65
                 row = int(move[1:])
-
+                if (self.stones[self.boardSize-row][column] != 0): return -1
                 if (self.blackToMove): self.stones[self.boardSize-row][column] = 1
                 else: self.stones[self.boardSize-row][column] = 2
             else:

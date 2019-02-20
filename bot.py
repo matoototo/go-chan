@@ -115,9 +115,11 @@ async def on_message(message):
                 currentGame = players[playerIndex].currentGame
 
                 if   (currentGame.blackPlayer.id == message.author.id and currentGame.blackToMove):
-                      currentGame.make_move(contents[0])
+                      if (currentGame.make_move(contents[0]) == -1):
+                          await client.send_message(message.channel, f"Illegal move!")
                 elif (currentGame.whitePlayer.id == message.author.id and not currentGame.blackToMove):
-                      currentGame.make_move(contents[0])
+                      if (currentGame.make_move(contents[0]) == -1):
+                          await client.send_message(message.channel, f"Illegal move!")
                 else:
                     await client.send_message(message.channel, f"It's not your move!")
                 if (currentGame.winner):
