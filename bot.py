@@ -13,10 +13,11 @@ HELP_MESSAGE.add_field(name = "`decline @name`", value = "Decline @name's challe
 HELP_MESSAGE.add_field(name = "`move <move> | pass | resign`", value = "Make a move or pass", inline = False)
 HELP_MESSAGE.add_field(name = "`withdraw @name`", value = "Withdraw a challenge", inline = False)
 HELP_MESSAGE.add_field(name = "`gorules`", value = "Print the Go rules", inline = False)
+HELP_MESSAGE.add_field(name = "`kohelp`", value = "Explains ko rule", inline = False)
 HELP_MESSAGE.add_field(name = "`gohelp`", value = "Print this help text", inline = False)
 
 client = discord.Client()
-commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp", "gorules"]
+commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp", "gorules", "kohelp"]
 boardSizes = ["19", "13", "9"]
 challenges = []
 games = []
@@ -50,6 +51,9 @@ async def on_message(message):
         elif command == "gorules":
             await client.send_file(message.channel, "assets/rules_1.png")
             await client.send_file(message.channel, "assets/rules_2.png")
+            return 0
+        elif command == "kohelp":
+            await client.send_message(message.channel, f"Positions are not allowed to repeat 2 times in a row. For more information see: https://senseis.xmp.net/?Ko")
             return 0
         else:
             await client.send_message(message.channel, f"Ummm, no habla wrong command!")
