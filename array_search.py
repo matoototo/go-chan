@@ -40,6 +40,7 @@ class Graph:
             for node in row:
                 self.nodes.append(node)
 
+
 class Node:
     """A simple node in an undirected graph."""
 
@@ -53,6 +54,7 @@ class Node:
 
         self.neighbours = neighbours
         self.value = value
+
 
 def count_territory(stones):
     """Counts the territory controlled by the players.
@@ -90,6 +92,7 @@ def count_territory(stones):
             index += 1
 
     return [territoryCountBlack, territoryCountWhite, territory]
+
 
 def __flood(start):
     """Performs a simple depth-first search for all adjacent nodes without stones, starting from the given node.

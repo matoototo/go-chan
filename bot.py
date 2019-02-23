@@ -22,9 +22,11 @@ challenges = []
 games = []
 players = []
 
+
 @client.event
 async def on_ready():
     print(f"log in successful ({client.user})")
+
 
 @client.event
 async def on_message(message):
@@ -153,11 +155,13 @@ async def on_message(message):
 
             if (not exists): await client.send_message(message.channel, f"Challenge doesn't exist!")
 
+
 def in_game(playerID):
     for player in players:
         if (player.id == playerID):
             if (player.currentGame): return True
     return False
+
 
 def make_game(challenge):
     game = Game(challenge)
@@ -182,6 +186,7 @@ def make_game(challenge):
         players.append(Player(challenge.challenged, game))
         game.set_players(False, players[-1])
     return game
+
 
 tokenFile = open("token", "r")
 token = tokenFile.read().strip()

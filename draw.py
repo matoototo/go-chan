@@ -57,6 +57,7 @@ class VisualBoard:
         self.__draw_board_texture(boardTexture)
         self.__draw_board()
 
+
     def __draw_board_texture(self, texture):
         """Draws a texture on the internal image.
         If the texture is smaller than the image it loops.
@@ -70,6 +71,7 @@ class VisualBoard:
         for x in range(0, self.width, textureWidth):
             for y in range(0, self.height, textureHeight):
                 self.baseImage.paste(texture, (x, y))
+
 
     def __draw_board(self):
         """Draw goban lines, labels and star points on the internal image."""
@@ -126,6 +128,7 @@ class VisualBoard:
             draw.ellipse([(leftX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (leftX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], COLOR)
             draw.ellipse([(centerX - STAR_POINT_SIZE, bottomY - STAR_POINT_SIZE), (centerX + STAR_POINT_SIZE, bottomY + STAR_POINT_SIZE)], COLOR)
             draw.ellipse([(rightX - STAR_POINT_SIZE, centerY - STAR_POINT_SIZE), (rightX + STAR_POINT_SIZE, centerY + STAR_POINT_SIZE)], COLOR)
+
 
     def generate_image(self, stones, territory = False):
         """Generates a visual representation of a Go game.

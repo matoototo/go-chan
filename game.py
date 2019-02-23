@@ -31,10 +31,11 @@ class Game:
         self.blackScore = 0
         self.whiteScore = 0
         self.territory = []
+
+
     def __boardString_to_stones(self):
         stones = [[0 for column in range(self.boardSize)] for row in range(self.boardSize)]
         index = 0
-
         for character in self.boardString.split():
             try:
                 numberOfBlanks = int(character)
@@ -44,6 +45,7 @@ class Game:
                 elif (character.upper() == "W"): stones[int(index / self.boardSize)][index % self.boardSize] = 2
                 index += 1
         return stones
+
 
     def __stones_to_boardString(self):
         boardString = ""
@@ -56,15 +58,17 @@ class Game:
                     if (blanks != 0): boardString += f" {str(blanks)}"
                     if (stone == 1): boardString += " B"
                     elif (stone == 2): boardString += " W"
-
                     blanks = 0
+        
         if (blanks != 0): boardString += f" {str(blanks)}"
         return boardString[1:]
+
 
     def set_boardString(self, newBoardString):
         self.boardString = newBoardString
         self.stones = self.__boardString_to_stones()
         return 0
+
 
     def make_move(self, move):
         if (self.__is_alive(move)):
@@ -77,12 +81,15 @@ class Game:
                 self.passCounter = 0
                 column = ord(move[0].upper()) - 65
                 row = int(move[1:])
+
                 if (self.stones[self.boardSize - row][column] != 0): return -1
                 if (self.blackToMove): self.stones[self.boardSize - row][column] = 1
                 else: self.stones[self.boardSize - row][column] = 2
+
                 if (self.historyBoardString == self.__stones_to_boardString()):
                     self.stones = self.__boardString_to_stones()
                     return -2
+
             else:
                 self.passCounter += 1
 
@@ -98,12 +105,14 @@ class Game:
             return 0
         else: return -1
 
+
     def __force_make_move(self, move):
             column = ord(move[0].upper()) - 65
             row = int(move[1:])
 
             if (self.blackToMove): self.stones[self.boardSize - row][column] = 1
             else: self.stones[self.boardSize - row][column] = 2
+
 
     def __is_alive(self, move):
         if (move != "pass"):
@@ -116,10 +125,11 @@ class Game:
         else:
             return True
 
+
     def __find_dead_stones(self, isBlack, move):
         """
         Tries move, loops through stones[][] and finds groups with no liberties of a particular color
-        If found, returns an array with dead stone indices, else return False
+        If found, returns an array with dead stone indices, else returns False
         """
 
         def get_friendly_neighbours(row, column, group): #returns adjacent same color stones (4 maximum) and number of liberties
@@ -185,6 +195,7 @@ class Game:
         if (dead != []): return dead
         else: return False
 
+
     def __remove_dead_stones(self, isBlack, move):
         """
         Calls __find_dead_stones() and removes the returned dead stones
@@ -198,6 +209,7 @@ class Game:
 
                 if (isBlack): self.prisoners[1] += 1
                 else: self.prisoners[0] += 1
+
 
     def draw_goban(self):
         goban = VisualBoard(self.boardSize)
@@ -213,6 +225,7 @@ class Game:
         arrayBuffer.seek(0)
 
         return arrayBuffer
+
 
     def end_game(self, winner = False):
         """
@@ -237,9 +250,11 @@ class Game:
         self.blackPlayer.finish_game()
         self.whitePlayer.finish_game()
 
+
     def set_players(self, blackPlayer = False, whitePlayer = False):
         if (blackPlayer): self.blackPlayer = blackPlayer
         if (whitePlayer): self.whitePlayer = whitePlayer
+
 
 class Challenge:
     def __init__(self, challenger, challenged, boardSize, playerChallenger = False, playerChallenged = False):
@@ -248,6 +263,7 @@ class Challenge:
         self.boardSize = boardSize
         self.playerChallenger = playerChallenger
         self.playerChallenged = playerChallenged
+
 
     def __copy__(self):
         return Challenge(self.challenger, self.challenged, self.boardSize, self.playerChallenger, self.playerChallenger)
