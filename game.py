@@ -23,7 +23,7 @@ class Game:
         self.boardString = str(self.boardSize ** 2)
         self.stones = self.__boardString_to_stones()
         self.blackToMove = True
-        self.historyBoardString = self.boardString
+        self.historyBoardString = ""
         self.moves = []
         self.passCounter = 0
         self.prisoners = [0, 0] #B, W (refers to the number of points B (W) will get from prisoners, not the number of 'dead' (imprisoned) B (W) stones)
@@ -80,6 +80,9 @@ class Game:
                 if (self.stones[self.boardSize - row][column] != 0): return -1
                 if (self.blackToMove): self.stones[self.boardSize - row][column] = 1
                 else: self.stones[self.boardSize - row][column] = 2
+                if (self.historyBoardString == self.__stones_to_boardString()):
+                    self.stones = self.__boardString_to_stones()
+                    return -2
             else:
                 self.passCounter += 1
 
@@ -101,9 +104,6 @@ class Game:
 
             if (self.blackToMove): self.stones[self.boardSize - row][column] = 1
             else: self.stones[self.boardSize - row][column] = 2
-
-            self.historyBoardString = self.boardString
-            self.boardString = self.__stones_to_boardString()
 
     def __is_alive(self, move):
         if (move != "pass"):
