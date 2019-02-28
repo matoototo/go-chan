@@ -3,3 +3,4 @@
 *.pyc
 .vscode/
 token
+*.db
