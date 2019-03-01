@@ -131,6 +131,39 @@ class StatStorage:
 
         return lossCount[0]
 
+    def stats_vs(self, player1, player2):
+        """Returns the wins and losses between two players.
+        The return value is an array of the form [p1wins, p2wins].
+
+        Arguments:
+        player1 -- The first player
+        player2 -- The second player
+        """
+
+        player1Id = self.__player_id(player1)
+        player2Id = self.__player_id(player2)
+        c = self.conn.cursor()
+
+        c.execute("""
+            SELECT COUNT(games.id)
+            FROM games
+            WHERE player1_id = ? AND player2_id = ?
+        """, (player1Id, player2Id))
+
+        player1WinCount = c.fetchone()
+
+        c.execute("""
+            SELECT COUNT(games.id)
+            FROM games
+            WHERE player1_id = ? AND player2_id = ?
+        """, (player2Id, player1Id))
+
+        player2WinCount = c.fetchone()
+
+        self.conn.commit()
+
+        return [player1WinCount[0], player2WinCount[0]]
+
     def log_game(self, player1, player2):
         """Adds a win to the specified player's stats.
 
@@ -157,5 +190,6 @@ class StatStorage:
 #storage.log_game("A", "B")
 #storage.log_game("B", "A")
 #storage.log_game("B", "A")
-#stats = storage.wins("A")
+#storage.log_game("B", "A")
+#stats = storage.stats_vs("A", "B")
 #print(stats)
