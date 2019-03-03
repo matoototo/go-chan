@@ -13,6 +13,8 @@ HELP_MESSAGE.add_field(name = "`accept @name`", value = "Accept @name's challeng
 HELP_MESSAGE.add_field(name = "`decline @name`", value = "Decline @name's challenge", inline = False)
 HELP_MESSAGE.add_field(name = "`move <move> | pass | resign`", value = "Make a move or pass", inline = False)
 HELP_MESSAGE.add_field(name = "`withdraw @name`", value = "Withdraw a challenge", inline = False)
+HELP_MESSAGE.add_field(name = "`stats @name`", value = "Print WLP (won, lost, played) stats.", inline = False)
+HELP_MESSAGE.add_field(name = "`stats @name @name`", value = "Print WLP (won, lost, played) stats between two players.", inline = False)
 HELP_MESSAGE.add_field(name = "`gorules`", value = "Print the Go rules", inline = False)
 HELP_MESSAGE.add_field(name = "`kohelp`", value = "Explains ko rule", inline = False)
 HELP_MESSAGE.add_field(name = "`gohelp`", value = "Print this help text", inline = False)
