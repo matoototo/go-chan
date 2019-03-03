@@ -5,6 +5,7 @@
 import discord
 from game import Game, Challenge
 from player import Player
+from stats import StatStorage
 
 HELP_MESSAGE = discord.Embed(title = "Commands", colour = 0x55cc55, description = "No prefix needed")
 HELP_MESSAGE.add_field(name = "`challenge @name <9|13|19>`", value = "Challenge @name", inline = False)
@@ -17,6 +18,7 @@ HELP_MESSAGE.add_field(name = "`kohelp`", value = "Explains ko rule", inline = F
 HELP_MESSAGE.add_field(name = "`gohelp`", value = "Print this help text", inline = False)
 
 client = discord.Client()
+stats = StatStorage("stats.db")
 commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp", "gorules", "kohelp"]
 boardSizes = ["19", "13", "9"]
 challenges = []
@@ -141,6 +143,12 @@ async def on_message(message):
                         await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by {abs(currentGame.blackScore-currentGame.whiteScore)} points!")
                     else: 
                         await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by resignation!")
+
+                    # Log game into stat storage
+                    if currentGame.winner == currentGame.blackPlayer:
+                        stats.log_game(currentGame.blackPlayer, currentGame.whitePlayer)
+                    elif currentGame.winner == currentGame.whitePlayer:
+                        stats.log_game(currentGame.whitePlayer, currentGame.blackPlayer)
 
                 imageData = currentGame.draw_goban()
                 await client.send_file(message.channel, fp = imageData, filename = "goban.png")
