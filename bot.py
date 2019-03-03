@@ -57,7 +57,7 @@ async def on_message(message):
                         return 0
                 _bString += f" {i.upper()}"
             if _size in (81, 169, 361):
-                _game = Game(Challenge(Player(""), Player(""), int(_size ** 0.5)))
+                _game = Game(Challenge(Player("", ""), Player("", ""), int(_size ** 0.5)))
                 _game.set_boardString(_bString)
                 _imageData = _game.draw_goban()
                 del _game
@@ -102,7 +102,9 @@ async def on_message(message):
                                 if (command == commands[0]):
                                     if (not in_game(message.raw_mentions[0])):
                                         challenges = [x for x in challenges if x != i] #remove challenge from challenges
-                                        acceptedGame = make_game(challenge)
+                                        challengerUser = await client.get_user_info(challenge.challenger)
+                                        challengedUser = await client.get_user_info(challenge.challenged)
+                                        acceptedGame = make_game(challenge, challengerUser.name, challengedUser.name)
                                         await client.send_message(message.channel, f"Challenge accepted!")
                                         imageData = acceptedGame.draw_goban()
                                         await client.send_file(message.channel, fp = imageData, filename = "goban.png")
@@ -171,9 +173,9 @@ async def on_message(message):
 
                     # Log game into stat storage
                     if currentGame.winner == currentGame.blackPlayer:
-                        stats.log_game(currentGame.blackPlayer.id, currentGame.whitePlayer.id, currentGame.boardSize)
+                        stats.log_game(currentGame.blackPlayer, currentGame.whitePlayer, currentGame.boardSize)
                     elif currentGame.winner == currentGame.whitePlayer:
-                        stats.log_game(currentGame.whitePlayer.id, currentGame.blackPlayer.id, currentGame.boardSize)
+                        stats.log_game(currentGame.whitePlayer, currentGame.blackPlayer, currentGame.boardSize)
 
                 imageData = currentGame.draw_goban()
                 await client.send_file(message.channel, fp = imageData, filename = "goban.png")
@@ -195,10 +197,17 @@ async def on_message(message):
             if (len(message.raw_mentions) in [1, 2]):
                 if   len(message.raw_mentions) == 1:
                     _playerID = message.raw_mentions[0]
-                    _won, _lost, _played = stats.wins(_playerID), stats.losses(_playerID), stats.games_played(_playerID)
+                    _user = await client.get_user_info(_playerID)
+                    _player = Player(_playerID, _user.name)
+                    _won, _lost, _played = stats.wins(_player), stats.losses(_player), stats.games_played(_player)
+                    del _player
                 elif len(message.raw_mentions) == 2:
                     _playerIDs = (message.raw_mentions[0], message.raw_mentions[1])
-                    _stats_vs = stats.stats_vs(_playerIDs[0], _playerIDs[1])
+                    _user = await client.get_user_info(_playerIDs[0])
+                    _players = [Player(_playerIDs[0], _user.name)]
+                    _user = await client.get_user_info(_playerIDs[1])
+                    _players.append(Player(_playerIDs[1], _user.name))
+                    _stats_vs = stats.stats_vs(_players[0], _players[1])
                     _won, _lost, _played = _stats_vs[0], _stats_vs[1], _stats_vs[0]+_stats_vs[1] #won/lost from p1 perspective
                 await client.send_message(message.channel, f"W{_won} L{_lost} P{_played}")
             else: await client.send_message(message.channel, f"Ummm, no habla wrong command!!")
@@ -209,7 +218,7 @@ def in_game(playerID):
     return False
 
 
-def make_game(challenge):
+def make_game(challenge, first, second):
     game = Game(challenge)
     games.append(game)
     firstExists = False
@@ -226,10 +235,10 @@ def make_game(challenge):
             game.set_players(False, player)
 
     if not firstExists:
-        players.append(Player(challenge.challenger, game))
+        players.append(Player(challenge.challenger, first, game))
         game.set_players(players[-1], False)
     if not secondExists:
-        players.append(Player(challenge.challenged, game))
+        players.append(Player(challenge.challenged, second, game))
         game.set_players(False, players[-1])
     return game
 

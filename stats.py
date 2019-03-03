@@ -15,7 +15,8 @@ class StatStorage:
         c.execute("""
             CREATE TABLE IF NOT EXISTS players (
                 id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL UNIQUE
+                name TEXT NOT NULL UNIQUE,
+                discord_id TEXT NOT NULL UNIQUE
             )
         """)
         c.execute("""
@@ -31,34 +32,34 @@ class StatStorage:
         self.conn.commit()
 
     def __encode_name(self, player):
-        """Encodes the given player name to ensure that special characters don't destroy our SQL queries or tables.
+        """Encodes the player name from a given player object to ensure that special characters don't destroy our SQL queries or tables.
 
         Arguments:
-        player -- The player name
+        player -- The player object
         """
-        bytestring = bytes(player, "utf-8")
+        bytestring = bytes(player.name, "utf-8")
 
         return base64.b64encode(bytestring)
 
     def __player_id(self, player):
-        """Returns the player id for a given player name.
+        """Returns the player id for a given player object.
         
         Arguments:
-        player -- The player name
+        player -- The player object
         """
 
         encodedName = self.__encode_name(player)
         c = self.conn.cursor()
 
         c.execute("""
-            INSERT OR IGNORE INTO players (name)
-            VALUES (?)
-        """, (encodedName,))
+            INSERT OR IGNORE INTO players (name, discord_id)
+            VALUES (?, ?)
+        """, (encodedName, player.id))
         c.execute("""
             SELECT id
             FROM players
-            WHERE name = ?
-        """, (encodedName,))
+            WHERE discord_id = ?
+        """, (player.id,))
 
         playerId = c.fetchone()
 
@@ -70,7 +71,7 @@ class StatStorage:
         """Returns the amount of games a player has played.
 
         Arguments:
-        player -- The player
+        player -- The player object
         """
 
         playerId = self.__player_id(player)
@@ -92,7 +93,7 @@ class StatStorage:
         """Returns the amount of games a player has won.
 
         Arguments:
-        player -- The player
+        player -- The player object
         """
 
         playerId = self.__player_id(player)
@@ -114,7 +115,7 @@ class StatStorage:
         """Returns the amount of games a player has lost.
 
         Arguments:
-        player -- The player
+        player -- The player object
         """
 
         playerId = self.__player_id(player)
@@ -137,8 +138,8 @@ class StatStorage:
         The return value is an array of the form [p1wins, p2wins].
 
         Arguments:
-        player1 -- The first player
-        player2 -- The second player
+        player1 -- The first player object
+        player2 -- The second player object
         """
 
         player1Id = self.__player_id(player1)
@@ -169,8 +170,8 @@ class StatStorage:
         """Adds a win to the specified player's stats.
 
         Arguments:
-        player1 -- The winner
-        player2 -- The loser
+        player1 -- The winner player object
+        player2 -- The loser player object
         """
 
         player1Id = self.__player_id(player1)
