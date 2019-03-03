@@ -146,9 +146,9 @@ async def on_message(message):
 
                     # Log game into stat storage
                     if currentGame.winner == currentGame.blackPlayer:
-                        stats.log_game(currentGame.blackPlayer, currentGame.whitePlayer)
+                        stats.log_game(currentGame.blackPlayer.id, currentGame.whitePlayer.id)
                     elif currentGame.winner == currentGame.whitePlayer:
-                        stats.log_game(currentGame.whitePlayer, currentGame.blackPlayer)
+                        stats.log_game(currentGame.whitePlayer.id, currentGame.blackPlayer.id)
 
                 imageData = currentGame.draw_goban()
                 await client.send_file(message.channel, fp = imageData, filename = "goban.png")
