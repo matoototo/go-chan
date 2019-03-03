@@ -19,7 +19,7 @@ HELP_MESSAGE.add_field(name = "`gohelp`", value = "Print this help text", inline
 
 client = discord.Client()
 stats = StatStorage("stats.db")
-commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp", "gorules", "kohelp"]
+commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp", "gorules", "kohelp", "stats"]
 boardSizes = ["19", "13", "9"]
 challenges = []
 games = []
@@ -42,9 +42,9 @@ async def on_message(message):
         command = message.content.lower().split(" ")[0]
         contents = message.content.lower().split(" ")[1:]
 
-        #check for contents of invalid length (maximum is two, with 'challenge')
+        #check for contents of invalid length (maximum is two, with 'challenge' and 'stats')
         if (len(contents) in [1, 2]):
-            if  ((len(contents) == 2 and command != commands[1]) or (len(contents) == 1 and command == commands[1])):
+            if  ((len(contents) == 2 and command not in (commands[1], commands[8])) or (len(contents) == 1 and command == commands[1])):
                 await client.send_message(message.channel, f"Ummm, no habla wrong command!")
                 return 0
         elif command == "gohelp":
@@ -166,8 +166,17 @@ async def on_message(message):
                         await client.send_message(message.channel, f"Challenge withdrawn!")
 
             if (not exists): await client.send_message(message.channel, f"Challenge doesn't exist!")
-
-
+        elif (command == "stats"):
+            if (len(message.raw_mentions) in [1, 2]):
+                if   len(message.raw_mentions) == 1:
+                    _playerID = message.raw_mentions[0]
+                    _won, _lost, _played = stats.wins(_playerID), stats.losses(_playerID), stats.games_played(_playerID)
+                elif len(message.raw_mentions) == 2:
+                    _playerIDs = (message.raw_mentions[0], message.raw_mentions[1])
+                    _stats_vs = stats.stats_vs(_playerIDs[0], _playerIDs[1])
+                    _won, _lost, _played = _stats_vs[0], _stats_vs[1], _stats_vs[0]+_stats_vs[1] #won/lost from p1 perspective
+                await client.send_message(message.channel, f"W{_won} L{_lost} P{_played}")
+            else: await client.send_message(message.channel, f"Ummm, no habla wrong command!!")
 def in_game(playerID):
     for player in players:
         if (player.id == playerID):
