@@ -126,7 +126,7 @@ async def on_message(message):
             if inGame:
                 currentGame = players[playerIndex].currentGame
 
-                if   (currentGame.blackPlayer.id == message.author.id and currentGame.blackToMove):
+                if (currentGame.blackPlayer.id == message.author.id and currentGame.blackToMove):
                       if (currentGame.make_move(contents[0]) == -1):
                           await client.send_message(message.channel, f"Illegal move!")
                       elif (currentGame.make_move(contents[0]) == -2):
@@ -140,7 +140,7 @@ async def on_message(message):
                     await client.send_message(message.channel, f"It's not your move!")
                 if (currentGame.winner):
                     if (currentGame.blackScore-currentGame.whiteScore != 0):
-                        await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by {abs(currentGame.blackScore-currentGame.whiteScore)} points!")
+                        await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by {abs(currentGame.blackScore - currentGame.whiteScore)} points!")
                     else: 
                         await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by resignation!")
 
