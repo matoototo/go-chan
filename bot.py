@@ -15,13 +15,14 @@ HELP_MESSAGE.add_field(name = "`move <move> | pass | resign`", value = "Make a m
 HELP_MESSAGE.add_field(name = "`withdraw @name`", value = "Withdraw a challenge", inline = False)
 HELP_MESSAGE.add_field(name = "`stats @name`", value = "Print WLP (won, lost, played) stats.", inline = False)
 HELP_MESSAGE.add_field(name = "`stats @name @name`", value = "Print WLP (won, lost, played) stats between two players.", inline = False)
+HELP_MESSAGE.add_field(name = "`show <board string>`", value = "Show board corresponding to given board string.", inline = False)
 HELP_MESSAGE.add_field(name = "`gorules`", value = "Print the Go rules", inline = False)
 HELP_MESSAGE.add_field(name = "`kohelp`", value = "Explains ko rule", inline = False)
 HELP_MESSAGE.add_field(name = "`gohelp`", value = "Print this help text", inline = False)
 
 client = discord.Client()
 stats = StatStorage("stats.db")
-commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp", "gorules", "kohelp", "stats"]
+commands = ["accept", "challenge", "decline", "move", "withdraw", "gohelp", "gorules", "kohelp", "stats", "show"]
 boardSizes = ["19", "13", "9"]
 challenges = []
 games = []
@@ -43,6 +44,28 @@ async def on_message(message):
     if (message.content.lower().split(" ")[0] in commands and not message.author.bot):
         command = message.content.lower().split(" ")[0]
         contents = message.content.lower().split(" ")[1:]
+
+        if command == "show":
+            _bString = ""
+            _size = 0
+            for i in contents:
+                if i.upper() in ("B", "W"): _size += 1
+                else:
+                    try: _size += int(i)
+                    except:
+                        await client.send_message(message.channel, f"Invalid board string!")
+                        return 0
+                _bString += f" {i.upper()}"
+            if _size in (81, 169, 361):
+                _game = Game(Challenge(Player(""), Player(""), int(_size ** 0.5)))
+                _game.set_boardString(_bString)
+                _imageData = _game.draw_goban()
+                del _game
+                await client.send_file(message.channel, fp = _imageData, filename = "goban.png")
+                return 0
+            else:
+                await client.send_message(message.channel, f"Invalid board string!")
+                return 0
 
         #check for contents of invalid length (maximum is two, with 'challenge' and 'stats')
         if (len(contents) in [1, 2]):
