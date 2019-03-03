@@ -23,6 +23,7 @@ class StatStorage:
                 id INTEGER PRIMARY KEY,
                 player1_id INTEGER,
                 player2_id INTEGER,
+                board_size INTEGER,
                 FOREIGN KEY(player1_id) REFERENCES players(id),
                 FOREIGN KEY(player2_id) REFERENCES players(id)
             )
@@ -164,7 +165,7 @@ class StatStorage:
 
         return [player1WinCount[0], player2WinCount[0]]
 
-    def log_game(self, player1, player2):
+    def log_game(self, player1, player2, boardSize):
         """Adds a win to the specified player's stats.
 
         Arguments:
@@ -177,9 +178,9 @@ class StatStorage:
         c = self.conn.cursor()
 
         c.execute("""
-            INSERT INTO games (player1_id, player2_id)
-            VALUES (?, ?)
-        """, (player1Id, player2Id))
+            INSERT INTO games (player1_id, player2_id, board_size)
+            VALUES (?, ?, ?)
+        """, (player1Id, player2Id, boardSize))
 
         self.conn.commit()
 
