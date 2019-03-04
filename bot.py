@@ -154,14 +154,16 @@ async def on_message(message):
                 currentGame = players[playerIndex].currentGame
 
                 if (currentGame.blackPlayer.id == message.author.id and currentGame.blackToMove):
-                      if (currentGame.make_move(contents[0]) == -1):
+                      _returnValue = currentGame.make_move(contents[0])
+                      if (_returnValue == -1):
                           await client.send_message(message.channel, f"Illegal move!")
-                      elif (currentGame.make_move(contents[0]) == -2):
+                      elif (_returnValue == -2):
                           await client.send_message(message.channel, f"Illegal move! (ko rule)")
                 elif (currentGame.whitePlayer.id == message.author.id and not currentGame.blackToMove):
-                      if (currentGame.make_move(contents[0]) == -1):
+                      _returnValue = currentGame.make_move(contents[0])
+                      if (_returnValue == -1):
                           await client.send_message(message.channel, f"Illegal move!")
-                      elif (currentGame.make_move(contents[0]) == -2):
+                      elif (_returnValue == -2):
                           await client.send_message(message.channel, f"Illegal move! (ko rule)")
                 else:
                     await client.send_message(message.channel, f"It's not your move!")
