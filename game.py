@@ -255,6 +255,10 @@ class Game:
         if (blackPlayer): self.blackPlayer = blackPlayer
         if (whitePlayer): self.whitePlayer = whitePlayer
 
+    def moves_to_string(self):
+        moveString = ""
+        for move in self.moves: moveString += f" {move}"
+        return moveString
 
 class Challenge:
     def __init__(self, challenger, challenged, boardSize, playerChallenger = False, playerChallenged = False):
