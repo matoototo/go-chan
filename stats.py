@@ -15,7 +15,7 @@ class StatStorage:
         c.execute("""
             CREATE TABLE IF NOT EXISTS players (
                 id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL UNIQUE,
+                name TEXT NOT NULL,
                 discord_id TEXT NOT NULL UNIQUE
             )
         """)
