@@ -41,6 +41,9 @@ class StatStorage:
 
         return base64.b64encode(bytestring)
 
+    def __decode_name(self, encoded):
+        return base64.b64decode("".join(map(chr,encoded))).decode('utf-8')
+
     def __player_id(self, player):
         """Returns the player id for a given player object.
         
