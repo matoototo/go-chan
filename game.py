@@ -74,6 +74,7 @@ class Game:
         if (self.__is_alive(move)):
             if (move != "pass"):
                 if (move == "resign"):
+                    self.moves.append(move)
                     if (self.blackToMove): self.end_game("white")
                     else: self.end_game("black")
                     return 0
@@ -94,6 +95,7 @@ class Game:
                 self.passCounter += 1
 
                 if (self.passCounter == 2):
+                    self.moves.append(move)
                     self.end_game("pass")
                     return 0
 
