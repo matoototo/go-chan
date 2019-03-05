@@ -1,5 +1,7 @@
 # Go-chan
 
+<img src ="https://user-images.githubusercontent.com/31648945/53832737-3e4ed780-3f87-11e9-90dd-136c881d07dd.png" width="350" height="350">
+
 ## Commands
 * `challenge @name <9|13|19>` Challenge @name
 * `accept @name` Accept @name's challenge
