@@ -34,9 +34,6 @@ async def on_ready():
 async def on_message(message):
     global commands, boardSizes, challenges
 
-    if ("hi bot-chan" in message.content.lower()):
-        await client.send_message(message.channel, "hi!")
-
     if (message.content.lower().split(" ")[0] in commands and not message.author.bot):
         command = message.content.lower().split(" ")[0]
         contents = message.content.lower().split(" ")[1:]
