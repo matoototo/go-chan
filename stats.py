@@ -19,6 +19,7 @@ class StatStorage:
                 discord_id TEXT NOT NULL UNIQUE
             )
         """)
+
         c.execute("""
             CREATE TABLE IF NOT EXISTS games (
                 id INTEGER PRIMARY KEY,
@@ -30,7 +31,9 @@ class StatStorage:
                 FOREIGN KEY(player2_id) REFERENCES players(id)
             )
         """)
+
         self.conn.commit()
+
 
     def __encode_name(self, player):
         """Encodes the player name from a given player object to ensure that special characters don't destroy our SQL queries or tables.
@@ -39,11 +42,12 @@ class StatStorage:
         player -- The player object
         """
         bytestring = bytes(player.name, "utf-8")
-
         return base64.b64encode(bytestring)
+
 
     def __decode_name(self, encoded):
         return base64.b64decode("".join(map(chr,encoded))).decode('utf-8')
+
 
     def __player_id(self, player):
         """Returns the player id for a given player object.
@@ -59,6 +63,7 @@ class StatStorage:
             INSERT OR IGNORE INTO players (name, discord_id)
             VALUES (?, ?)
         """, (encodedName, player.id))
+
         c.execute("""
             SELECT id
             FROM players
@@ -66,10 +71,10 @@ class StatStorage:
         """, (player.id,))
 
         playerId = c.fetchone()
-
         self.conn.commit()
 
         return playerId[0]
+
 
     def games_played(self, player):
         """Returns the amount of games a player has played.
@@ -88,10 +93,10 @@ class StatStorage:
         """, (playerId, playerId))
 
         gameCount = c.fetchone()
-
         self.conn.commit()
 
         return gameCount[0]
+
 
     def wins(self, player):
         """Returns the amount of games a player has won.
@@ -110,10 +115,10 @@ class StatStorage:
         """, (playerId,))
 
         winCount = c.fetchone()
-
         self.conn.commit()
 
         return winCount[0]
+
 
     def losses(self, player):
         """Returns the amount of games a player has lost.
@@ -132,10 +137,10 @@ class StatStorage:
         """, (playerId,))
 
         lossCount = c.fetchone()
-
         self.conn.commit()
 
         return lossCount[0]
+
 
     def stats_vs(self, player1, player2):
         """Returns the wins and losses between two players.
@@ -165,10 +170,10 @@ class StatStorage:
         """, (player2Id, player1Id))
 
         player2WinCount = c.fetchone()
-
         self.conn.commit()
 
         return [player1WinCount[0], player2WinCount[0]]
+
 
     def log_game(self, player1, player2, boardSize, moveString):
         """Adds a win to the specified player's stats.

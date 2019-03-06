@@ -41,6 +41,7 @@ async def on_message(message):
         if command == "show":
             _bString = ""
             _size = 0
+
             for i in contents:
                 if i.upper() in ("B", "W"): _size += 1
                 else:
@@ -49,6 +50,7 @@ async def on_message(message):
                         await client.send_message(message.channel, f"Invalid board string!")
                         return 0
                 _bString += f" {i.upper()}"
+            
             if _size in (81, 169, 361):
                 _game = Game(Challenge(Player("", ""), Player("", ""), int(_size ** 0.5)))
                 _game.set_boardString(_bString)
@@ -57,7 +59,7 @@ async def on_message(message):
                 await client.send_file(message.channel, fp = _imageData, filename = "goban.png")
                 return 0
             else:
-                await client.send_message(message.channel, f"Invalid board string!")
+                await client.send_message(message.channel, f"Invalid board string! (wrong size: {_size})")
                 return 0
 
         #check for contents of invalid length (maximum is two, with 'challenge' and 'stats')
@@ -65,33 +67,36 @@ async def on_message(message):
             if  ((len(contents) == 2 and command not in (commands[1], commands[8])) or (len(contents) == 1 and command == commands[1])):
                 await client.send_message(message.channel, f"Ummm, no habla wrong command!")
                 return 0
+        
         elif command == "gohelp":
             await client.send_message(message.channel, embed = HELP_MESSAGE)
             return 0
+        
         elif command == "gorules":
             await client.send_file(message.channel, "assets/rules_1.png")
             await client.send_file(message.channel, "assets/rules_2.png")
             return 0
+        
         elif command == "kohelp":
             await client.send_message(message.channel, f"Positions are not allowed to repeat 2 times in a row. For more information see: https://senseis.xmp.net/?Ko")
             return 0
+        
         else:
             await client.send_message(message.channel, f"Ummm, no habla wrong command!")
             return 0
 
         if (command == "accept" or command == "decline"):
+
             if (not in_game(message.author.id)):
                 if (len(message.raw_mentions) != 1):
                     await client.send_message(message.channel, f"You have to mention the person that challenged you!")
                 else:
                     exists = False
-
                     for board in boardSizes:
                         challenge = Challenge(message.raw_mentions[0], message.author.id, int(board))
                         for i in challenges:
                             if (i.challenger == challenge.challenger and i.challenged == challenge.challenged and i.boardSize == challenge.boardSize):
                                 exists = True
-
                                 if (command == commands[0]):
                                     if (not in_game(message.raw_mentions[0])):
                                         challenges = [x for x in challenges if x != i] #remove challenge from challenges
@@ -101,23 +106,30 @@ async def on_message(message):
                                         await client.send_message(message.channel, f"Challenge accepted!")
                                         imageData = acceptedGame.draw_goban()
                                         await client.send_file(message.channel, fp = imageData, filename = "goban.png")
-                                    else: await client.send_message(message.channel, f"They're already in a game, try again later!")
+                                    else: 
+                                        await client.send_message(message.channel, f"They're already in a game, try again later!")
                                 else:
                                     challenges = [x for x in challenges if x != i] #remove challenge from challenges
                                     await client.send_message(message.channel, f"Challenge declined!")
-                    if (not exists): await client.send_message(message.channel, f"No such challenge exists!")
-            else: await client.send_message(message.channel, f"You're already in a game, you can't respond to challenges at this moment!")
+                    if (not exists): 
+                        await client.send_message(message.channel, f"No such challenge exists!")
+            else: 
+                await client.send_message(message.channel, f"You're already in a game, you can't respond to challenges at this moment!")
+
         #challenge @user board
         elif (command == "challenge"):
             contents[1] = contents[1].split("x")[0] #try to change "_x_" to "_"
 
             if (message.author.mention == contents[0]):
                 await client.send_message(message.channel, f"You can't challenge yourself!")
+
             elif (len(message.raw_mentions) != 1):
                 await client.send_message(message.channel, f"You have to mention the person you want to challenge!")
+
             elif (contents[1] not in boardSizes):
                 contents[1] = contents[1].split("x")[0]
                 await client.send_message(message.channel, f"Oh no... you entered an invalid board size!")
+
             else:
                 exists = False
                 challenge = Challenge(message.author.id, message.raw_mentions[0], int(contents[1]))
@@ -133,6 +145,7 @@ async def on_message(message):
                 else:
                     challenges.append(challenge.__copy__())
                     await client.send_message(message.channel, f"Challenge sent!")
+
         elif (command == "move"):
             inGame = False
 
@@ -152,14 +165,17 @@ async def on_message(message):
                           await client.send_message(message.channel, f"Illegal move!")
                       elif (_returnValue == -2):
                           await client.send_message(message.channel, f"Illegal move! (ko rule)")
+
                 elif (currentGame.whitePlayer.id == message.author.id and not currentGame.blackToMove):
                       _returnValue = currentGame.make_move(contents[0])
                       if (_returnValue == -1):
                           await client.send_message(message.channel, f"Illegal move!")
                       elif (_returnValue == -2):
                           await client.send_message(message.channel, f"Illegal move! (ko rule)")
+
                 else:
                     await client.send_message(message.channel, f"It's not your move!")
+
                 if (currentGame.winner):
                     if (currentGame.blackScore-currentGame.whiteScore != 0):
                         await client.send_message(message.channel, f"<@!{currentGame.winner.id}> won by {abs(currentGame.blackScore - currentGame.whiteScore)} points!")
@@ -174,7 +190,9 @@ async def on_message(message):
 
                 imageData = currentGame.draw_goban()
                 await client.send_file(message.channel, fp = imageData, filename = "goban.png")
-            else: await client.send_message(message.channel, f"You're not in a game!")
+            else: 
+                await client.send_message(message.channel, f"You're not in a game!")
+
         elif (command == "withdraw"):
             exists = False
 
@@ -187,8 +205,11 @@ async def on_message(message):
                         challenges = [x for x in challenges if x != i] #remove challenge from challenges
                         await client.send_message(message.channel, f"Challenge withdrawn!")
 
-            if (not exists): await client.send_message(message.channel, f"Challenge doesn't exist!")
+            if (not exists): 
+                await client.send_message(message.channel, f"Challenge doesn't exist!")
+
         elif (command == "stats"):
+
             if (len(message.raw_mentions) in [1, 2]):
                 if   len(message.raw_mentions) == 1:
                     _playerID = message.raw_mentions[0]
@@ -196,6 +217,7 @@ async def on_message(message):
                     _player = Player(_playerID, _user.name)
                     _won, _lost, _played = stats.wins(_player), stats.losses(_player), stats.games_played(_player)
                     del _player
+
                 elif len(message.raw_mentions) == 2:
                     _playerIDs = (message.raw_mentions[0], message.raw_mentions[1])
                     _user = await client.get_user_info(_playerIDs[0])
@@ -204,8 +226,13 @@ async def on_message(message):
                     _players.append(Player(_playerIDs[1], _user.name))
                     _stats_vs = stats.stats_vs(_players[0], _players[1])
                     _won, _lost, _played = _stats_vs[0], _stats_vs[1], _stats_vs[0]+_stats_vs[1] #won/lost from p1 perspective
+
                 await client.send_message(message.channel, f"W{_won} L{_lost} P{_played}")
-            else: await client.send_message(message.channel, f"Ummm, no habla wrong command!!")
+
+            else: 
+                await client.send_message(message.channel, f"Ummm, no habla wrong command!!")
+
+
 def in_game(playerID):
     for player in players:
         if (player.id == playerID):
@@ -224,6 +251,7 @@ def make_game(challenge, first, second):
             firstExists = True
             player.set_currentGame(game)
             game.set_players(player, False)
+
         if (player.id == challenge.challenged):
             secondExists = True
             player.set_currentGame(game)
@@ -235,6 +263,7 @@ def make_game(challenge, first, second):
     if not secondExists:
         players.append(Player(challenge.challenged, second, game))
         game.set_players(False, players[-1])
+
     return game
 
 

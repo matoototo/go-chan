@@ -1,4 +1,5 @@
 class Player:
+    
     def __init__(self, playerID, name, game = False):
         self.id = playerID
         self.name = name

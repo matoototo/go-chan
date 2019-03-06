@@ -141,12 +141,15 @@ class Game:
             if row > 0:
                 if self.stones[row - 1][column] == color and [row - 1, column] not in group: friendly.append([row - 1, column])
                 elif self.stones[row - 1][column] == 0: liberties += 1
+
             if row < self.boardSize - 1:
                 if self.stones[row + 1][column] == color and [row + 1, column] not in group: friendly.append([row + 1, column])
                 elif self.stones[row + 1][column] == 0: liberties += 1
+
             if column > 0:
                 if self.stones[row][column - 1] == color and [row, column - 1] not in group: friendly.append([row, column - 1])
                 elif self.stones[row][column - 1] == 0: liberties += 1
+
             if column < self.boardSize - 1:
                 if self.stones[row][column + 1] == color and [row, column + 1] not in group: friendly.append([row, column + 1])
                 elif self.stones[row][column + 1] == 0: liberties += 1
@@ -182,9 +185,7 @@ class Game:
                             _row, _column = queue.pop(0)
                             _neighbours = get_friendly_neighbours(_row, _column, group)
                             queue += _neighbours[:-1]
-
                             if (_neighbours[-1]) != 0: groupIsAlive = True
-
                             group.append([_row, _column])
 
                     if not groupIsAlive and stone == color:
@@ -244,10 +245,8 @@ class Game:
             self.whiteScore = territoryCountWhite + self.prisoners[1] + 6.5 #6.5 = komi
             self.territory = territory
 
-            if self.blackScore > self.whiteScore:
-                self.winner = self.blackPlayer
-            else:
-                self.winner = self.whitePlayer
+            if self.blackScore > self.whiteScore: self.winner = self.blackPlayer
+            else: self.winner = self.whitePlayer
 
         self.blackPlayer.finish_game()
         self.whitePlayer.finish_game()
@@ -257,12 +256,15 @@ class Game:
         if (blackPlayer): self.blackPlayer = blackPlayer
         if (whitePlayer): self.whitePlayer = whitePlayer
 
+
     def moves_to_string(self):
         moveString = ""
         for move in self.moves: moveString += f" {move}"
         return moveString
 
+
 class Challenge:
+    
     def __init__(self, challenger, challenged, boardSize, playerChallenger = False, playerChallenged = False):
         self.challenger = challenger
         self.challenged = challenged
