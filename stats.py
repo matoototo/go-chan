@@ -188,14 +188,3 @@ class StatStorage:
         """, (player1Id, player2Id, boardSize, moveString))
 
         self.conn.commit()
-
-#storage = StatStorage("test.db")
-#storage.log_game("A", "B")
-#storage.log_game("A", "B")
-#storage.log_game("B", "A")
-#storage.log_game("A", "B")
-#storage.log_game("B", "A")
-#storage.log_game("B", "A")
-#storage.log_game("B", "A")
-#stats = storage.stats_vs("A", "B")
-#print(stats)

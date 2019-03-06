@@ -1,7 +1,3 @@
-#id 545306487191240704
-#token NTQ1MzA2NDg3MTkxMjQwNzA0.D0Xv8w.e7L44QaHK6ndZigjkSTWGchrEZ8
-#perm 523328
-
 import discord
 from game import Game, Challenge
 from player import Player
