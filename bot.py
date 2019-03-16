@@ -9,7 +9,7 @@ HELP_MESSAGE.add_field(name = "`accept @name`", value = "Accept @name's challeng
 HELP_MESSAGE.add_field(name = "`decline @name`", value = "Decline @name's challenge", inline = False)
 HELP_MESSAGE.add_field(name = "`move <move> | pass | resign`", value = "Make a move or pass", inline = False)
 HELP_MESSAGE.add_field(name = "`withdraw @name`", value = "Withdraw a challenge", inline = False)
-HELP_MESSAGE.add_field(name = "`stats @name`", value = "Print WLP (won, lost, played) stats.", inline = False)
+HELP_MESSAGE.add_field(name = "`stats @name`", value = "Print WLP (won, lost, played) stats and Elo.", inline = False)
 HELP_MESSAGE.add_field(name = "`stats @name @name`", value = "Print WLP (won, lost, played) stats between two players.", inline = False)
 HELP_MESSAGE.add_field(name = "`show <board string>`", value = "Show board corresponding to given board string.", inline = False)
 HELP_MESSAGE.add_field(name = "`gorules`", value = "Print the Go rules", inline = False)
@@ -211,11 +211,12 @@ async def on_message(message):
         elif (command == "stats"):
 
             if (len(message.raw_mentions) in [1, 2]):
+                _elo = 0
                 if   len(message.raw_mentions) == 1:
                     _playerID = message.raw_mentions[0]
                     _user = await client.get_user_info(_playerID)
                     _player = Player(_playerID, _user.name)
-                    _won, _lost, _played = stats.wins(_player), stats.losses(_player), stats.games_played(_player)
+                    _won, _lost, _played, _elo = stats.wins(_player), stats.losses(_player), stats.games_played(_player), stats.get_elo(_player)
                     del _player
 
                 elif len(message.raw_mentions) == 2:
@@ -226,8 +227,8 @@ async def on_message(message):
                     _players.append(Player(_playerIDs[1], _user.name))
                     _stats_vs = stats.stats_vs(_players[0], _players[1])
                     _won, _lost, _played = _stats_vs[0], _stats_vs[1], _stats_vs[0]+_stats_vs[1] #won/lost from p1 perspective
-
-                await client.send_message(message.channel, f"W{_won} L{_lost} P{_played}")
+                if (_elo == 0): await client.send_message(message.channel, f"W{_won} L{_lost} P{_played}")
+                else: await client.send_message(message.channel, f"W{_won} L{_lost} P{_played} {_elo}")
 
             else: 
                 await client.send_message(message.channel, f"Ummm, no habla wrong command!!")

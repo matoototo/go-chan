@@ -16,7 +16,8 @@ class StatStorage:
             CREATE TABLE IF NOT EXISTS players (
                 id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL,
-                discord_id TEXT NOT NULL UNIQUE
+                discord_id TEXT NOT NULL UNIQUE,
+                elo INTEGER DEFAULT 1000
             )
         """)
 
@@ -191,5 +192,69 @@ class StatStorage:
             INSERT INTO games (player1_id, player2_id, board_size, moves)
             VALUES (?, ?, ?, ?)
         """, (player1Id, player2Id, boardSize, moveString))
+
+        self.__update_elo(player1, player2)
+
+        self.conn.commit()
+    
+
+    def get_elo(self, player):
+        """Returns the current Elo rating of the specified player
+
+        Arguments:
+        player -- Player object
+        """
+
+        playerId = self.__player_id(player)
+        c = self.conn.cursor()
+
+        c.execute("""
+            SELECT elo FROM players
+            WHERE id = ?
+        """, (playerId,))
+
+        return c.fetchone()[0]
+
+
+    def __update_elo(self, winner, loser):
+        """Updates Elo ratings of given players
+
+        Arguments:
+        winner -- Player object of the winner
+        loser -- Player object of the loser
+        """
+
+        winnerElo = self.get_elo(winner)
+        loserElo = self.get_elo(loser)
+
+        player1Id = self.__player_id(winner)
+        player2Id = self.__player_id(loser)
+
+        expectedScore = 1/(1+10**((loserElo-winnerElo)/400)) #for winner
+        
+        if (winnerElo < 2100): kWinner = 32
+        elif (winnerElo <= 2400): kWinner = 24
+        else: kWinner = 16
+        
+        if (loserElo < 2100): kLoser = 32
+        elif (loserElo <= 2400): kLoser = 24
+        else: kLoser = 16
+
+        winnerElo += round(kWinner*(1-expectedScore), 2)
+        loserElo += round(kLoser*(-expectedScore), 2)
+
+        c = self.conn.cursor()
+
+        c.execute("""
+            UPDATE players
+            SET elo = ?
+            WHERE id = ?
+        """, (winnerElo, player1Id))
+        
+        c.execute("""
+            UPDATE players
+            SET elo = ?
+            WHERE id = ?
+        """, (loserElo, player2Id))
 
         self.conn.commit()
